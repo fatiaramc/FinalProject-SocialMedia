@@ -13,16 +13,17 @@ namespace Facebook.DataAccess
     {
         private readonly SqlClient _client;
         private static PersonaDataService _personaDataService;
+        private readonly string connectionString = "Data Source = DESKTOP-F4DEC2L\\SQLEXPRESS; initial catalog = Facebook;integrated security = True";
 
-        private PersonaDataService(string connectionString)
+        private PersonaDataService()
         {
             _client = SqlClient.GetSqlClient(connectionString);
         }
-        public static PersonaDataService GetPersonaDataService(string connectionString)
+        public static PersonaDataService GetPersonaDataService()
         {
             if(_personaDataService == null)
             {
-                _personaDataService = new PersonaDataService(connectionString);
+                _personaDataService = new PersonaDataService();
             }
             return _personaDataService;
         }
@@ -200,7 +201,7 @@ namespace Facebook.DataAccess
             return result;
         }
 
-        /*public List<Persona> GetPosts(int idPersona)
+        public List<IPost> GetPosts(int idPersona)
         {
             var result = new List<IPost>();
             try
@@ -231,13 +232,21 @@ namespace Facebook.DataAccess
                     var dataReader = command.ExecuteReader();
                     while (dataReader.Read())
                     {
-                        var post = new Persona
+                        var mensaje = dataReader["mensaje"].ToString();
+                        var likes = Convert.ToInt32(dataReader["likes"].ToString());
+                        var img = dataReader["imagen"].ToString();
+                        Post post;
+
+                        if (img != "")
                         {
-                            //idPersona = Convert.ToInt32(dataReader["idPersona"].ToString()),
-                            Nombre = dataReader["Nombre"].ToString(),
-                            Apellido = dataReader["Apellido"].ToString(),
-                        };
-                        result.Add(amigo);
+                             post = new ImagePostCreator(mensaje, idPersona, img);
+                        }
+                        else
+                        {
+                            post = new MessagePostCreator(mensaje, idPersona, img);
+                        }
+                        var p = post.CreatePost();
+                        result.Add(p);
                     }
                 }
             }
@@ -251,6 +260,62 @@ namespace Facebook.DataAccess
                 _client.Close();
             }
             return result;
-        }*/
+        }
+
+        public bool AgregarPost(string mensaje, int id, string img)
+        {
+            var result = false;
+            try
+            {
+                if (_client.Open())
+                {
+                    var command = new SqlCommand
+                    {
+                        Connection = _client.GetConnection(),
+                        CommandText = "agregarPost",
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    var par1 = new SqlParameter("@mensaje", SqlDbType.NVarChar)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = mensaje
+                    };
+                    var par2 = new SqlParameter("@imagen", SqlDbType.NVarChar)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = img
+                    };
+                    var par3 = new SqlParameter("@idPersona", SqlDbType.NVarChar)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = id
+                    };
+                    var par4 = new SqlParameter("@haserror", SqlDbType.Bit)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
+                    command.Parameters.Add(par1);
+                    command.Parameters.Add(par2);
+                    command.Parameters.Add(par3);
+                    command.Parameters.Add(par4);
+
+                    command.ExecuteNonQuery();
+                    result = !Convert.ToBoolean(command.Parameters["@haserror"].Value.ToString());
+                }
+            }
+            catch(Exception e)
+            {
+                Console.Write("--------------EROOOOOOOOOOOOOOOOR", e,"TERMINE EL EROOOOOOR");
+                result = false;
+            }
+            finally
+            {
+                _client.Close();
+            }
+            return result;
+        }
+
     }
 }

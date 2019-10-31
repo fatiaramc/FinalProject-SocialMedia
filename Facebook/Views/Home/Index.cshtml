@@ -1,7 +1,7 @@
 ﻿@{
 	ViewData["Title"] = "Home Page";
 }
-@model IEnumerable<Facebook.Models.Persona>
+@model IEnumerable<Facebook.Models.IPost>
 
 	@if (Model.Any())
 	{
@@ -10,13 +10,11 @@
 		<div>
 			<table class="table table-striped table-bordered">
 				<tr>
-					<th>Nombre</th>
-					<th>Apellido</th>
+					<th>Mensaje</th>
 				</tr>
 				@foreach(var item in Model){
 					<tr>
-						<td>@item.Nombre</td>
-						<td>@item.Apellido</td>
+						<td>@item.mensaje</td>
 					</tr>
 				}
 			</table>foreach

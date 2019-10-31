@@ -8,6 +8,6 @@ namespace Facebook.Models
     //creator
     public abstract class Post
     {
-        public abstract IPost CreatePost(string m, int id, string img);
+        public abstract IPost CreatePost();
     }
 }

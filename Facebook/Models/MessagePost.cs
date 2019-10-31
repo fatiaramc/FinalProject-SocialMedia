@@ -21,18 +21,13 @@ namespace Facebook.Models
             idPersona = id;
             likes = 0;
             imagen = img;
-            //_dataService = new PersonaDataService(connectionString);
+            _dataService = PersonaDataService.GetPersonaDataService();
         }
 
-        public IPost PublishPost(string m, int id, string img)
+        public bool PublishPost()
         {
-            throw new NotImplementedException();
+            return _dataService.AgregarPost(mensaje, idPersona, null);
+            //throw new NotImplementedException();
         }
-        /*public IPost PublishPost(string m, int id, string img)
-{
-   return throw NotImplementedException;
-   //return new MessagePost(m, id, img);
-   //_dataService.
-}*/
     }
 }

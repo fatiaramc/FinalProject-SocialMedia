@@ -16,10 +16,10 @@ namespace Facebook.Controllers
 
         public HomeController()
         {
-            string connectionString = null;
+            //string connectionString = null;
             //SqlConnection cnn;
-            connectionString = "Data Source = DESKTOP-F4DEC2L\\SQLEXPRESS; initial catalog = Facebook;integrated security = True";
-            _dataService = PersonaDataService.GetPersonaDataService(connectionString);
+            //connectionString = "Data Source = DESKTOP-F4DEC2L\\SQLEXPRESS; initial catalog = Facebook;integrated security = True";
+            _dataService = PersonaDataService.GetPersonaDataService();
         }
 
         public IActionResult Index()
@@ -45,8 +45,15 @@ namespace Facebook.Controllers
 
             //aqui tengo que modificar que mande el id que es y no 1
             var amigos = _dataService.GetAmigos(1);
+            //Post p = new ImagePostCreator("Nuevo post", 1, "blablablaimagen");
+            //var k = p.CreatePost();
+            //k.PublishPost();
+
+            var posts = _dataService.GetPosts(1);
+
+            
             ViewData["Message"] = "Message";
-            return View(amigos);
+            return View(posts);
         }
 
         [HttpPost]

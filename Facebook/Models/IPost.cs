@@ -12,6 +12,6 @@ namespace Facebook.Models
         int likes { get; set; }
         string imagen { get; set; }
 
-        IPost PublishPost(string m, int id, string img);
+        bool PublishPost();
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Facebook.DataAccess;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,19 +8,25 @@ namespace Facebook.Models
 {
     public class ImagePost : IPost
     {
-        public string mensaje { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public int idPersona { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public int likes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string imagen { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private readonly PersonaDataService _dataService;
 
+        public string mensaje { get; set; }
+        public int idPersona { get; set; }
+        public int likes { get; set; }
+        public string imagen { get; set; }
+
+        public ImagePost(string m, int id, string img)
+        {
+            mensaje = m;
+            idPersona = id;
+            likes = 0;
+            imagen = img;
+            _dataService = PersonaDataService.GetPersonaDataService();
+        }
         public bool PublishPost()
         {
-            throw new NotImplementedException();
-        }
-
-        public IPost PublishPost(string m, int id, string img)
-        {
-            throw new NotImplementedException();
+            return _dataService.AgregarPost(mensaje, idPersona, imagen);
+            //throw new NotImplementedException();
         }
     }
 }

@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace Facebook.Models
 {
-    public class MessagePostCreator : Post
+    public class ImagePostCreator : Post
     {
         public string _m;
         public int _id;
         public string _img;
 
-        public MessagePostCreator(string m, int id, string img)
+        public ImagePostCreator(string m, int id, string img)
         {
             _m = m;
             _id = id;
@@ -21,7 +21,7 @@ namespace Facebook.Models
 
         public override IPost CreatePost()
         {
-            return new MessagePost(_m,_id,_img);
+            return new ImagePost(_m, _id, _img);
         }
     }
 }
