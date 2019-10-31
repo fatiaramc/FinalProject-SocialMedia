@@ -243,7 +243,7 @@ namespace Facebook.DataAccess
                         }
                         else
                         {
-                            post = new MessagePostCreator(mensaje, idPersona, img);
+                            post = new MessagePostCreator(mensaje, idPersona);
                         }
                         var p = post.CreatePost();
                         result.Add(p);

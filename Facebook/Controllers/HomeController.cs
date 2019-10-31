@@ -48,7 +48,9 @@ namespace Facebook.Controllers
             //Post p = new ImagePostCreator("Nuevo post", 1, "blablablaimagen");
             //var k = p.CreatePost();
             //k.PublishPost();
-
+            /*Post p = new MessagePostCreator("Nuevo post sin imagen", 1);
+            var k = p.CreatePost();
+            k.PublishPost();*/
             var posts = _dataService.GetPosts(1);
 
             

@@ -26,7 +26,7 @@ namespace Facebook.Models
 
         public bool PublishPost()
         {
-            return _dataService.AgregarPost(mensaje, idPersona, null);
+            return _dataService.AgregarPost(mensaje, idPersona, imagen);
             //throw new NotImplementedException();
         }
     }

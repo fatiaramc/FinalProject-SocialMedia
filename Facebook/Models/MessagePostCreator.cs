@@ -11,17 +11,17 @@ namespace Facebook.Models
         public int _id;
         public string _img;
 
-        public MessagePostCreator(string m, int id, string img)
+        public MessagePostCreator(string m, int id)
         {
             _m = m;
             _id = id;
-            _img = img;
+            //_img = img;
 
         }
 
         public override IPost CreatePost()
         {
-            return new MessagePost(_m,_id,_img);
+            return new MessagePost(_m,_id,"");
         }
     }
 }
