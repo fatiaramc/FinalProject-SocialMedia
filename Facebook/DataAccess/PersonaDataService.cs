@@ -317,5 +317,64 @@ namespace Facebook.DataAccess
             return result;
         }
 
+        public List<Persona> GetPersonaWithEmail(Persona p)
+        {
+            var email = p.correo_electronico;
+            var psw = p.contraseña;
+            var result = new List<Persona>();
+            try
+            {
+                if (_client.Open())
+                {
+                    var command = new SqlCommand
+                    {
+                        Connection = _client.GetConnection(),
+                        CommandText = "getPersonasWithEmail",
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    var par1 = new SqlParameter("@email", SqlDbType.NVarChar)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = email
+                    };
+
+                    var par2 = new SqlParameter("@haserror", SqlDbType.Bit)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
+                    command.Parameters.Add(par1);
+                    command.Parameters.Add(par2);
+                    //terminar esto
+                    var dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        var amigo = new Persona
+                        {
+                            idPersona = Convert.ToInt32(dataReader["idPersona"].ToString()),
+                            Nombre = dataReader["Nombre"].ToString(),
+                            Apellido = dataReader["Apellido"].ToString(),
+                            correo_electronico = dataReader["correo_electronico"].ToString(),
+                            contraseña = dataReader["contraseña"].ToString(),
+                            fecha_nac = dataReader["fecha_nac"].ToString(),
+                        };
+                        result.Add(amigo);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.Write(e);
+                //do something
+            }
+            finally
+            {
+                _client.Close();
+            }
+            return result;
+        }
+
+
     }
 }

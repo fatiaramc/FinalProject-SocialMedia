@@ -32,9 +32,6 @@ namespace Facebook.Models
         [Required(ErrorMessage = "El cumpleaños es Requerido")]
         public string fecha_nac { set; get; }
 
-        [Display(Name = "Género")]
-        public string genero { set; get; }
-
         [Display(Name = "Descripción")]
         public string descripcion
         { set; get; }

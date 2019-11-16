@@ -48,9 +48,9 @@ namespace Facebook.Controllers
             //Post p = new ImagePostCreator("Nuevo post", 1, "blablablaimagen");
             //var k = p.CreatePost();
             //k.PublishPost();
-            /*Post p = new MessagePostCreator("Nuevo post sin imagen", 1);
+            Post p = new MessagePostCreator("test post", 1);
             var k = p.CreatePost();
-            k.PublishPost();*/
+            k.PublishPost();
             var posts = _dataService.GetPosts(1);
 
             
@@ -81,7 +81,7 @@ namespace Facebook.Controllers
         {
             ViewData["Message"] = "Your contact page.";
 
-            return View();
+            return View("Contact");
         }
 
         public IActionResult Privacy()
@@ -93,6 +93,36 @@ namespace Facebook.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpPost]
+        public void RegistrarPersona(Persona p)
+        {
+            DataAccess.PersonaDataService.GetPersonaDataService().RegistrarPersona(p);
+            Console.Write("HOLA");
+        }
+
+        [HttpPost]
+        public IActionResult LoginWithEmail(Persona p)
+        {
+            var x = DataAccess.PersonaDataService.GetPersonaDataService().GetPersonaWithEmail(p);
+            if (x.Count != 0)
+            {
+                //Response.Redirect("Contact");
+                //Response.Redirect("~/HomeController/Contact");
+                //return View("Contact");
+                //esto regresa a ajax function
+                return Json(new { success = true, responseText = "Done" });
+
+            }
+            return Content("Error");
+            
+        }
+
+        [HttpPost]
+        public void VerifyEmail(Persona p)
+        {
+            var x = DataAccess.PersonaDataService.GetPersonaDataService().GetPersonaWithEmail(p);
         }
     }
 }
