@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Facebook.Models;
 using Facebook.DataAccess;
 using System.Data.SqlClient;
+using System.Web;
 
 namespace Facebook.Controllers
 {
@@ -14,12 +15,17 @@ namespace Facebook.Controllers
     {
         private readonly PersonaDataService _dataService;
 
+        public Persona _usuario = null;
+
+        public UsuarioActual _usuarioActual = null;
+
         public HomeController()
         {
             //string connectionString = null;
             //SqlConnection cnn;
             //connectionString = "Data Source = DESKTOP-F4DEC2L\\SQLEXPRESS; initial catalog = Facebook;integrated security = True";
             _dataService = PersonaDataService.GetPersonaDataService();
+            _usuarioActual = UsuarioActual.GetUsuarioActual();
         }
 
         public IActionResult Index()
@@ -80,7 +86,8 @@ namespace Facebook.Controllers
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";
-
+            //ViewData["UserName"] = _usuario.Nombre;
+            //j = sessionStorage.getItem('idusuario');
             return View("Contact");
         }
 
@@ -108,11 +115,24 @@ namespace Facebook.Controllers
             var x = DataAccess.PersonaDataService.GetPersonaDataService().GetPersonaWithEmail(p);
             if (x.Count != 0)
             {
+                //return Redirect("https://www.w3schools.com");
                 //Response.Redirect("Contact");
                 //Response.Redirect("~/HomeController/Contact");
                 //return View("Contact");
                 //esto regresa a ajax function
-                return Json(new { success = true, responseText = "Done" });
+                //return Json(new { success = true, responseText = "Done" });
+                if(x[0].contraseña == p.contraseña)
+                {
+                    _usuario = x[0];
+                    _usuarioActual.SetUserActual(_usuario);
+                    return Json(new { success = true, redirecturl = Url.Action("Contact", "Home"), responseText = "Done", usuario = _usuario });
+                    //return Json(new { success = true, redirecturl = Url.Action("About", "Home"), responseText = "Done", usuario = _usuario });
+                }
+                else
+                {
+                    //error en contraseña
+                }
+                
 
             }
             return Content("Error");
@@ -123,6 +143,20 @@ namespace Facebook.Controllers
         public void VerifyEmail(Persona p)
         {
             var x = DataAccess.PersonaDataService.GetPersonaDataService().GetPersonaWithEmail(p);
+        }
+
+        [HttpPost]
+        public IActionResult GetUserWithID(string id)
+        {
+            var id2 = -1;
+            Int32.TryParse(id,out id2);
+            var x = DataAccess.PersonaDataService.GetPersonaDataService().GetPersonaWithId(id2);
+            if(x.Count != 0)
+            {
+                _usuario = x[0];
+                return Json(new { success = true, usuario = _usuario, id = _usuario.idPersona });
+            }
+            return Content("Error");
         }
     }
 }

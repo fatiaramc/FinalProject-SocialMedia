@@ -1,7 +1,23 @@
 ﻿@{
     ViewData["Title"] = "About";
 }
-<h2>@ViewData["Title"]</h2>
-<h3>@ViewData["Message"]</h3>
+<body onload="test2()">
+	<h2>@ViewData["Title"]</h2>
+	<h3>@ViewData["Message"]</h3>
 
-<p>Use this area to provide additional information.</p>
+	<p>Use this area to provide additional information.</p>
+	<script>
+		function test() {
+			alert("Hola");
+			var x = document.getElementById('post2text');
+			console.log(x.nombre);
+			alert(x);
+			alert("Aqui estoy");
+			k = sessionStorage.getItem('nombre');
+			console.log(k)
+		}
+		function test2() {
+			alert("Hola");
+		}
+	</script>
+</body>
