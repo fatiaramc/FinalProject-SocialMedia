@@ -29,7 +29,7 @@
 
 			<div class="row">
 				<div class="col-lg-3" style="align-content:center">
-					<img src="@UsuarioActual.GetUsuarioActual().GetUser().picture" style="width:200px;height:200px;"/>
+					<img src="@UsuarioActual.GetUsuarioActual().GetUser().picture" style="width:200px;height:200px;" />
 				</div>
 				<div class="col-lg-4">
 					<h3>@UsuarioActual.GetUsuarioActual().GetUser().Nombre @UsuarioActual.GetUsuarioActual().GetUser().Apellido</h3>
@@ -70,30 +70,78 @@
 						</div>
 					</div>
 				</div>
-				
-				
+
+
 			</div>
-			
-			<h2>Amigos</h2>
+			<div class="row">
+				<div>
+					<h2>Amigos</h2>
 
-			@foreach (var amigo in UsuarioActual.GetUsuarioActual().GetAmigos())
-			{
-				<div class="col-lg-5" style="background-color:whitesmoke">
-					<div class="col-lg-4">
-						<img src="@amigo.picture" style="width:150px; height:150px" />
-					</div>
-					<div class="col-lg-7" style="margin:12pt">
-						<h3>@amigo.Nombre @amigo.Apellido</h3>
-						<h5><b>Correo: </b>@amigo.correo_electronico</h5>
-						<h5><b>Cumpleaños: </b> @amigo.FechaToString()</h5>
-					</div>
+					@foreach (var amigo in UsuarioActual.GetUsuarioActual().GetAmigos())
+					{
+						<div class="col-lg-5" style="background-color:whitesmoke">
+							<div class="col-lg-4">
+								<img src="@amigo.picture" style="width:150px; height:150px" />
+							</div>
+							<div class="col-lg-7" style="margin:12pt">
+								<h3>@amigo.Nombre @amigo.Apellido</h3>
+								<h5><b>Correo: </b>@amigo.correo_electronico</h5>
+								<h5><b>Cumpleaños: </b> @amigo.FechaToString()</h5>
+							</div>
 
+						</div>
+						<div class="col-lg-1"></div>
+					}
 				</div>
-				<div class="col-lg-1"></div>
+			</div>
+
+			@foreach (var post in UsuarioActual.GetUsuarioActual().GetMisPosts())
+			{
+				var yo = @UsuarioActual.GetUsuarioActual().GetUser();
+				<div class="row post1" style=" background-color:whitesmoke; margin-left:200pt; margin-top:30pt">
+					<div class="row" style="padding-left:10px">
+						<div class="col-lg-1"><img src="@yo.picture" style="border-radius: 50%" id="profpic" /></div>
+						<div class="col-lg-10"><p3 id="nombre">@yo.Nombre @yo.Apellido</p3><p2> with </p2><p1> Arup Pegu</p1><p2> and</p2><p1> 15 others.</p1><br><p4>4 hrs.</p4></div>
+					</div>
+					<div class="row" style="padding-left:15px">
+						<p>@post.mensaje</p>
+						@if (@post.imagen != "")
+						{
+							<img src="@post.imagen" height="411" width="580" />
+						}
+					</div>
+					<br />
+					<div class="row" style="padding-left:15px">
+						<p6><button style="color:blue">Like</button>  Comment  Share</p6>
+					</div>
+					<!--<hr><p1>Amit Deb</p1><p2> and</p2><p1> 5 others</p1><p2> like this</p2>-->
+					<hr /><p1>@post.likes me gusta</p1>
+					<br /><br />
+					<div class="row">
+						<div class="col-lg-1" id="commentprof2" style="margin-right:8pt;"><img src="@UsuarioActual.GetUsuarioActual().GetUser().picture" id="profpic" /></div>
+						<div class="col-lg-11" id="commentboxpos2"><input type="textarea" placeholder="comment" id="commentbox" /></div>
+					</div>
+					@for (var j = 0; j < 3; j++)
+					{
+						<div class="row" style="padding-left:25pt; margin-top:10pt">
+							<div class="col-lg-1" id="commentprof2"><img src="~/prof.png" id="profpic" /></div>
+							<div class="col-lg-10" id="commentboxpos2">Hola esto es un comment</div>
+						</div>
+					}
+				</div>
 
 			}
+
+
+
+
 		</div>
 		<script>
+			function like() {
+				
+				console.log('ya di like');
+				console.log(post.likes);
+			}
 			function GuardarDesc() {
 				var x = document.getElementById("desc");
 				console.log(x.value);

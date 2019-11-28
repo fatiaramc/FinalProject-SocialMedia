@@ -28,5 +28,10 @@ namespace Facebook.Models
             return _dataService.AgregarPost(mensaje, idPersona, imagen);
             //throw new NotImplementedException();
         }
+
+        public void Like()
+        {
+            likes++;
+        }
     }
 }

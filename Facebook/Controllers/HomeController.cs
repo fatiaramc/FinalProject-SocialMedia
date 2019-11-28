@@ -52,17 +52,17 @@ namespace Facebook.Controllers
 
             //aqui tengo que modificar que mande el id que es y no 1
             //var amigos = _dataService.GetAmigos(1);
-            //Post p = new ImagePostCreator("Nuevo post", 1, "blablablaimagen");
+            //Post p = new ImagePostCreator("Nuevo post", 4, "blablablaimagen");
             //var k = p.CreatePost();
             //k.PublishPost();
-            Post p = new MessagePostCreator("test post", 1);
+            /*Post p = new MessagePostCreator("test post", 4);
             var k = p.CreatePost();
             k.PublishPost();
-            var posts = _dataService.GetPosts(1);
+            var posts = _dataService.GetPosts(1);*/
 
             
             ViewData["Message"] = "Message";
-            return View(posts);
+            return View();
         }
 
         [HttpPost]
@@ -185,6 +185,13 @@ namespace Facebook.Controllers
                 return Json(new { success = true });
             }
             return Content("Error");
+        }
+
+        [HttpPost]
+        public IActionResult Like(IPost post)
+        {
+            post.Like();
+            return Json(new { success = true });
         }
     }
 }

@@ -12,11 +12,14 @@ namespace Facebook.Models
         private readonly PersonaDataService _dataService;
         private static Persona _p { get; set; }
         private static List<Persona> Amigos { get; set; }
+        private static List<IPost> PostPropios { get; set; }
+        private static List<IPost> PostAmigos { get; set; }
 
         private UsuarioActual()
         {
             _p = new Persona();
             _dataService = PersonaDataService.GetPersonaDataService();
+            PostAmigos = new List<IPost>();
         }
 
         public static UsuarioActual GetUsuarioActual() {
@@ -34,6 +37,8 @@ namespace Facebook.Models
         public void SetUserActual(Persona p) {
             _p = p;
             ActualizarAmigos();
+            ActualizarMisPost();
+            ActualizarPostAmigos();
         }
         public void ClearUser()
         {
@@ -58,6 +63,35 @@ namespace Facebook.Models
         public void ActualizarUsuario()
         {
             _p = _dataService.GetPersonaWithId(_p.idPersona)[0];
+        }
+
+        public void ActualizarMisPost()
+        {
+            PostPropios = _dataService.GetPosts(_p.idPersona);
+        }
+
+        public void ActualizarPostAmigos()
+        {
+            PostAmigos = new List<IPost>();
+            foreach(var amigo in Amigos)
+            {
+                PostAmigos.AddRange(_dataService.GetPosts(amigo.idPersona));
+            }
+        }
+
+        public List<IPost> GetMisPosts()
+        {
+            return PostPropios;
+        }
+
+        public List<IPost> GetPostsAmigos()
+        {
+            return PostAmigos;
+        }
+
+        public Persona GetAmigo(int id)
+        {
+            return _dataService.GetPersonaWithId(id)[0];
         }
     }
 }

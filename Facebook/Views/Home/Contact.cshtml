@@ -7,7 +7,6 @@
 
 
 	<div class="header1">
-		<!--<div id="img3" class="header1"><img src="logo.png" id="img3" /></div>-->
 		<div id="img3" class="header1" style="color: white; text-decoration: none; font-size: 30px; font-weight: 900;">Faceboook</div>
 		<div id="searcharea" class="header1"><input placeholder="search here..." type="text" id="searchbox" /></div>
 		<div id="profilearea" class="header1"><a href="~/profile.php"><img src="~/prof.png" id="profpic" /></a></div>
@@ -22,22 +21,15 @@
 			<div id="setting" class="header1">
 				<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
 					<img src="~/set.png" height="30" />
-					<!--<span class="caret"></span>-->
 				</button>
 				<ul class="dropdown-menu">
 					<li data-toggle="modal" data-target="#myModal" onclick="edit()"><a href="#">Editar perfil</a></li>
 				</ul>
 			</div>
 		</div>
-		<!--<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-			Dropdown Example
-			<span class="caret"></span>
-		</button>-->
-
 		<div id="logout" class="header1">
 			<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
 				<img src="~/lo.png" height="30" />
-				<!--<span class="caret"></span>-->
 			</button>
 			<ul class="dropdown-menu">
 				<li><a href="Index">Cerrar sesion</a></li>
@@ -73,41 +65,79 @@
 		<div id="side24" class="bodyn">Create event</div>
 	</div>
 
-	<div class="post">
+	<!--<div class="post">
 		<div id="column-1" class="post">update status | add photos/videos | create photo album<hr><br><br><br><br><br><br><hr></div>
 		<div id="postpos" class="post"><input type="submit" id="buttonpost" value="post" /></div>
 		<div id="postboxpos" class="post"><textarea placeholder="What's in your mind" id="postbox" type="text"></textarea></div>
 
-	</div>
+	</div>-->
 
-	<div class="post1">
-		<img src="~/prof.png" id="profpic" /><br><br><img src="" height="411" width="580" /><br><br><p6>Like  Comment  Share</p6><br><hr><p1>Amit Deb</p1><p2> and</p2><p1> 5 others</p1><p2> like this</p2>
-		<div id="post2text" class="post2"><p3 id="nombre"> </p3><p2> with </p2><p1> Arup Pegu</p1><p2> and</p2><p1> 15 others.</p1><br><p4>4 hrs.</p4></div>
-		<div id="commentprof2" class="post2"><img src="~/prof.png" id="profpic" /></div>
-		<div id="commentboxpos2" class="post2"><input type="textarea" placeholder="comment" id="commentbox" /></div>
+	<!--for (var i = 0; i < 1; i++)-->
+	@foreach (var post in UsuarioActual.GetUsuarioActual().GetPostsAmigos())
+	{
+		<!--<div class="row">
+			<div class="post1">
+				<img src="~/prof.png" id="profpic" /><br><br><img src="" height="411" width="580" /><br><br><p6>Like  Comment  Share</p6><br><hr><p1>Amit Deb</p1><p2> and</p2><p1> 5 others</p1><p2> like this</p2>
+				<div id="post2text" class="post2 row"><p3 id="nombre"> </p3><p2> with </p2><p1> Arup Pegu</p1><p2> and</p2><p1> 15 others.</p1><br><p4>4 hrs.</p4></div>
+				<div id="commentprof2" class="post2 row"><img src="~/prof.png" id="profpic" /></div>
+				<div id="commentboxpos2" class="post2 row"><input type="textarea" placeholder="comment" id="commentbox" /></div>
+			</div>
+		</div>-->
+		var amigo = UsuarioActual.GetUsuarioActual().GetAmigo(post.idPersona);
+		
+	<div class="row post1" style=" background-color:whitesmoke; margin-left:200pt; margin-top:30pt">
+		<div class="row" style="padding-left:10px">
+			<div class="col-lg-1"><img src="@amigo.picture" style="border-radius: 50%" id="profpic" /></div>
+			<div class="col-lg-10"><p3 id="nombre">@amigo.Nombre @amigo.Apellido</p3><p2> with </p2><p1> Arup Pegu</p1><p2> and</p2><p1> 15 others.</p1><br><p4>4 hrs.</p4></div>
+		</div>
+		<div class="row" style="padding-left:15px">
+			<p>@post.mensaje</p>
+			@if (@post.imagen != null)
+			{
+				<img src="@post.imagen" height="411" width="580" />
+			}
+		</div>
+		<br />
+		<div class="row" style="padding-left:15px">
+			<p6>Like  Comment  Share</p6>
+		</div>
+		<hr><p1>Amit Deb</p1><p2> and</p2><p1> 5 others</p1><p2> like this</p2>
+		<br /><br />
+		<div class="row">
+			<div class="col-lg-1" id="commentprof2" style="margin-right:8pt;"><img src="@UsuarioActual.GetUsuarioActual().GetUser().picture" id="profpic" /></div>
+			<div class="col-lg-11" id="commentboxpos2"><input type="textarea" placeholder="comment" id="commentbox" /></div>
+		</div>
+		@for (var j = 0; j < 3; j++)
+		{
+			<div class="row" style="padding-left:25pt; margin-top:10pt">
+				<div class="col-lg-1" id="commentprof2"><img src="~/prof.png" id="profpic" /></div>
+				<div class="col-lg-10" id="commentboxpos2">Hola esto es un comment</div>
+			</div>
+		}
 	</div>
+		
+	}
+
 
 	<!-- Modal -->
 	<div id="myModal" class="modal fade" role="dialog">
 		<div class="modal-dialog">
-
-			<!-- Modal content-->
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title">Editar perfil</h4>
 				</div>
-				<div class="modal-body" style="height:430px" id="wrapper">					
-						<div id="div2">
-							<p>Recuerda que para ver tus cambios debes refrescar la página.</p>
-							<li><input type="text" placeholder="First Name" id="firstname"><input type="text" placeholder="Surname" id="surname"></li>
-							<li><input type="text" placeholder="Email address" id="email"></li>
-							<li><input type="password" placeholder="New password" id="password"></li>
-							<li>
-								Descipcion
-								<textarea name="paragraph_text" id="desc" cols="41" rows="6"></textarea>
-							</li>
-						</div>
+				<div class="modal-body" style="height:430px" id="wrapper">
+					<div id="div2">
+						<p>Recuerda que para ver tus cambios debes refrescar la página.</p>
+						<li><input type="text" placeholder="First Name" id="firstname"><input type="text" placeholder="Surname" id="surname"></li>
+						<li><input type="text" placeholder="Email address" id="email"></li>
+						<li><input type="password" placeholder="New password" id="password"></li>
+						<li>
+							Descipcion
+							<textarea name="paragraph_text" id="desc" cols="41" rows="6"></textarea>
+						</li>
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="edit()">Guardar</button>
@@ -117,67 +147,6 @@
 
 		</div>
 	</div>
-
-	<!--<div class="post3">
-		<img src="prof.png" id="profpic" /><br><br><img src="wall.jpg" height="411" width="580" /><br><br><p6>Like  Comment  Share</p6><br><hr><p1>Amit Deb</p1><p2> and</p2><p1> 5 others</p1><p2> like this</p2>
-		<div id="post2text" class="post2"><p3>Rani Mukharji </p3><p2>with </p2><p1> Arup Pegu</p1><p2> and</p2><p1> 15 others.</p1><br><p4>4 hrs.</p4></div>
-		<div id="commentprof2" class="post2"><img src="prof.png" id="profpic" /></div>
-		<div id="commentboxpos2" class="post2"><input type="textarea" placeholder="comment" id="commentbox" /></div>
-	</div>
-
-	<div class="post4">
-		<img src="prof.png" id="profpic" /><br><br><img src="wall.jpg" height="411" width="580" /><br><br><p6>Like  Comment  Share</p6><br><hr><p1>Amit Deb</p1><p2> and</p2><p1> 5 others</p1><p2> like this</p2>
-		<div id="post2text" class="post2"><p3>Rani Mukharji </p3><p2>with </p2><p1> Arup Pegu</p1><p2> and</p2><p1> 15 others.</p1><br><p4>4 hrs.</p4></div>
-		<div id="commentprof2" class="post2"><img src="prof.png" id="profpic" /></div>
-		<div id="commentboxpos2" class="post2"><input type="textarea" placeholder="comment" id="commentbox" /></div>
-	</div>
-
-	<div class="post5">
-		<img src="prof.png" id="profpic" /><br><br><img src="wall.jpg" height="411" width="580" /><br><br><p6>Like  Comment  Share</p6><br><hr><p1>Amit Deb</p1><p2> and</p2><p1> 5 others</p1><p2> like this</p2>
-		<div id="post2text" class="post2"><p3>Rani Mukharji </p3><p2>with </p2><p1> Arup Pegu</p1><p2> and</p2><p1> 15 others.</p1><br><p4>4 hrs.</p4></div>
-		<div id="commentprof2" class="post2"><img src="prof.png" id="profpic" /></div>
-		<div id="commentboxpos2" class="post2"><input type="textarea" placeholder="comment" id="commentbox" /></div>
-	</div>
-		-->
-	<!--<div class="sidebox">
-	<div id="sidebox1" class="sidebox">
-	<div id="sideboxx1">YOUR PAGES</div><hr><br><br><br>See all<hr>
-	<div id="sideboxx2">This Week</div><br><br><br>See more<hr>
-	<div id="sideboxx3">Recent Posts</div><br><br><br>See more<hr>
-	<div id="sideboxx4">You haven't posted in this days</div><br><br><br><br><br><br>See all
-	</div>
-	<div id="post1pos" class="sidebox"><input type="submit" id="buttonpost1" value="write a post"/></div>
-	</div>
-
-	<div class="sideboxxx2">
-	<div id="sidebox2" class="sideboxxx2">
-	<br>
-	<hr>
-	<div id="sideboxx21">Trending</div>
-	<br><br><br>See more<hr>
-	<div id="sideboxx22">Suggested Pages</div><br><br><br>See all<hr>
-	<div id="sideboxx23">People you may know</div><br><br><br><br><br><br>See all
-	</div>
-
-	</div>-->
-	<!--<div class="chat-sidebarx">
-	</div>
-	<div class="chat-sidebar"><div id="chatnamebox" class="chat-sidebar">jb</div>
-	<div id="chatnamebox1" class="chat-sidebar">jb</div>
-	<div id="chatnamebox2" class="chat-sidebar">jb</div>
-	<div id="chatnamebox3" class="chat-sidebar">jb</div>
-	<div id="chatnamebox4" class="chat-sidebar">jb</div>
-	<div id="chatnamebox5" class="chat-sidebar">jb</div>
-	<div id="chatnamebox6" class="chat-sidebar">jb</div>
-	<div id="chatnameboxp1" class="chat-sidebar"><img src="prof.png"id="profpic"/></div>
-	<div id="chatnameboxp2" class="chat-sidebar"><img src="prof.png"id="profpic"/></div>
-	<div id="chatnameboxp3" class="chat-sidebar"><img src="prof.png"id="profpic"/></div>
-	<div id="chatnameboxp4" class="chat-sidebar"><img src="prof.png"id="profpic"/></div>
-	<div id="chatnameboxp5" class="chat-sidebar"><img src="prof.png"id="profpic"/></div>
-	<div id="chatnameboxp6" class="chat-sidebar"><img src="prof.png"id="profpic"/></div>
-	<div id="chatnameboxp7" class="chat-sidebar"><img src="prof.png"id="profpic"/></div>
-	</div>-->
-
 	<div class="header10"></div>
 
 
@@ -185,8 +154,7 @@
 </html>
 <script>
 	function test() {
-		var name = document.getElementById('nombre');
-		name.innerHTML = '@UsuarioActual.GetUsuarioActual().GetUser().Nombre';
+
 	}
 	function edit() {
 		console.log('actual', '@UsuarioActual.GetUsuarioActual().GetUser().Nombre');
