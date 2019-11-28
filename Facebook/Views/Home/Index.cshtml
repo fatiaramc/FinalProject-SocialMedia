@@ -99,7 +99,6 @@
 	function loginWithEmail() {
 		var email = document.getElementById("loginEmail").value;
 		var psw = document.getElementById("loginPassword").value;
-		alert(email);
 		var person = {
 			Nombre: "",
 			Apellido: "",
@@ -107,7 +106,6 @@
 			contraseña: psw,
 			fecha_nac: null,
 		};
-		alert(person.email);
 		$.ajax({
 			async: false,
 			type: "POST",
@@ -123,8 +121,6 @@
 					sessionStorage.setItem('apellido', response.usuario["apellido"]);
 					sessionStorage.setItem('correo', response.usuario["correo_electronico"]);
 					sessionStorage.setItem('desc', response.usuario["descripcion"]);
-
-					console.log('usuario', response.usuario); 
 					//alert('nombre:',sessionStorage.getItem('nombre'));					
 					window.location = response.redirecturl;
 					

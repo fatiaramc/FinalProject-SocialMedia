@@ -60,9 +60,13 @@ namespace Facebook.DataAccess
                     {
                         var amigo = new Persona
                         {
-                            //idPersona = Convert.ToInt32(dataReader["idPersona"].ToString()),
+                            idPersona = Convert.ToInt32(dataReader["idPersona"].ToString()),
                             Nombre = dataReader["Nombre"].ToString(),
                             Apellido = dataReader["Apellido"].ToString(),
+                            correo_electronico = dataReader["correo_electronico"].ToString(),                            
+                            fecha_nac = dataReader["fecha_nac"].ToString(),
+                            picture = dataReader["picture"].ToString(),
+                            descripcion = dataReader["descripcion"].ToString(),
                         };
                         result.Add(amigo);
                     }
@@ -117,8 +121,8 @@ namespace Facebook.DataAccess
                         Direction = ParameterDirection.Input,
                         Value = persona.contraseña
                     };
-
-                    var par5 = new SqlParameter("@fecha_nac", SqlDbType.NVarChar)
+                    //modifique NVarChar por Date por si despues no funciona
+                    var par5 = new SqlParameter("@fecha_nac", SqlDbType.Date)
                     {
                         Direction = ParameterDirection.Input,
                         Value = persona.fecha_nac
@@ -359,6 +363,8 @@ namespace Facebook.DataAccess
                             correo_electronico = dataReader["correo_electronico"].ToString(),
                             contraseña = dataReader["contraseña"].ToString(),
                             fecha_nac = dataReader["fecha_nac"].ToString(),
+                            picture = dataReader["picture"].ToString(),
+                            descripcion = dataReader["descripcion"].ToString(),
                         };
                         result.Add(amigo);
                     }
@@ -414,6 +420,8 @@ namespace Facebook.DataAccess
                             correo_electronico = dataReader["correo_electronico"].ToString(),
                             contraseña = dataReader["contraseña"].ToString(),
                             fecha_nac = dataReader["fecha_nac"].ToString(),
+                            picture = dataReader["picture"].ToString(),
+                            descripcion = dataReader["descripcion"].ToString(),
                         };
                         result.Add(amigo);
                     }
@@ -423,6 +431,102 @@ namespace Facebook.DataAccess
             {
                 Console.Write(e);
                 //do something
+            }
+            finally
+            {
+                _client.Close();
+            }
+            return result;
+        }
+
+        public bool EditarPersona(Persona persona)
+        {
+            var result = false;
+            try
+            {
+                if (_client.Open())
+                {
+                    var command = new SqlCommand
+                    {
+                        Connection = _client.GetConnection(),
+                        CommandText = "editUser",
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    var par9 = new SqlParameter("@id", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = persona.idPersona
+                    };
+
+                    var par1 = new SqlParameter("@Nombre", SqlDbType.NVarChar)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = persona.Nombre
+                    };
+
+                    var par2 = new SqlParameter("@Apellido", SqlDbType.NVarChar)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = persona.Apellido
+                    };
+
+                    var par3 = new SqlParameter("@correo_electronico", SqlDbType.NVarChar)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = persona.correo_electronico
+                    };
+
+                    var par4 = new SqlParameter("@contraseña", SqlDbType.NVarChar)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = persona.contraseña
+                    };
+
+                    var par5 = new SqlParameter("@fecha_nac", SqlDbType.Date)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = persona.fecha_nac
+                    };
+
+                    var par6 = new SqlParameter("@picture", SqlDbType.NVarChar)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = persona.picture
+                    };
+
+                    var par7 = new SqlParameter("@descripcion", SqlDbType.NVarChar)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = persona.descripcion
+                    };
+
+                    var par8 = new SqlParameter("@haserror", SqlDbType.Bit)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
+
+                    command.Parameters.Add(par9);
+                    command.Parameters.Add(par1);
+                    command.Parameters.Add(par2);
+                    command.Parameters.Add(par3);
+                    command.Parameters.Add(par4);
+                    command.Parameters.Add(par5);
+                    command.Parameters.Add(par6);
+                    command.Parameters.Add(par7);
+                    command.Parameters.Add(par8);
+                    
+
+                    command.ExecuteNonQuery();
+
+                    result = !Convert.ToBoolean(command.Parameters["@haserror"].Value.ToString());
+
+                }
+            }
+            catch (Exception e)
+            {
+                result = false;
             }
             finally
             {

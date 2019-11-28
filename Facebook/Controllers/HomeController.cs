@@ -79,6 +79,7 @@ namespace Facebook.Controllers
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
+            ViewData["Desc"] = "";
 
             return View();
         }
@@ -155,6 +156,20 @@ namespace Facebook.Controllers
             {
                 _usuario = x[0];
                 return Json(new { success = true, usuario = _usuario, id = _usuario.idPersona });
+            }
+            return Content("Error");
+        }
+
+        [HttpPost]
+        public IActionResult EditUserDesc(AdapterDesc desc)
+        {
+            Persona p = UsuarioActual.GetUsuarioActual().GetUser();
+            p.descripcion = desc.Descripcion;
+
+            var result = DataAccess.PersonaDataService.GetPersonaDataService().EditarPersona(p);
+            if (!result)
+            {
+                return Json(new { success = true });
             }
             return Content("Error");
         }

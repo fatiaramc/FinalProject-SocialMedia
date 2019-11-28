@@ -36,5 +36,14 @@ namespace Facebook.Models
         public string descripcion
         { set; get; }
 
+        [Display(Name = "Imagen")]
+        public string picture
+        { set; get; }
+
+
+        public string FechaToString()
+        {
+            return fecha_nac.Split(" ")[0];
+        }
     }
 }

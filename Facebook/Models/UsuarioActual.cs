@@ -49,5 +49,10 @@ namespace Facebook.Models
         {
             Amigos = _dataService.GetAmigos(_p.idPersona);
         }
+
+        public void EditarDescripcion(string desc)
+        {
+            _p.descripcion = desc;
+        }
     }
 }
