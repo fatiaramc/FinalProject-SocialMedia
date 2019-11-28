@@ -45,5 +45,10 @@ namespace Facebook.Models
         {
             return fecha_nac.Split(" ")[0];
         }
+
+        public DateTime GetDate()
+        {
+            return Convert.ToDateTime(fecha_nac);
+        }
     }
 }

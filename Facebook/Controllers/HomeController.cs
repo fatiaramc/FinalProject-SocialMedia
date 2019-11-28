@@ -30,6 +30,7 @@ namespace Facebook.Controllers
 
         public IActionResult Index()
         {
+            UsuarioActual.GetUsuarioActual().ClearUser();
 
             /*var x = _dataService.RegistrarPersona(new Persona
             {
@@ -50,7 +51,7 @@ namespace Facebook.Controllers
             });*/
 
             //aqui tengo que modificar que mande el id que es y no 1
-            var amigos = _dataService.GetAmigos(1);
+            //var amigos = _dataService.GetAmigos(1);
             //Post p = new ImagePostCreator("Nuevo post", 1, "blablablaimagen");
             //var k = p.CreatePost();
             //k.PublishPost();
@@ -169,6 +170,18 @@ namespace Facebook.Controllers
             var result = DataAccess.PersonaDataService.GetPersonaDataService().EditarPersona(p);
             if (!result)
             {
+                return Json(new { success = true });
+            }
+            return Content("Error");
+        }
+
+        [HttpPost]
+        public IActionResult EditUser(Persona p)
+        {
+            var result = DataAccess.PersonaDataService.GetPersonaDataService().EditarPersona(p);
+            if (result)
+            {
+                UsuarioActual.GetUsuarioActual().ActualizarUsuario();
                 return Json(new { success = true });
             }
             return Content("Error");

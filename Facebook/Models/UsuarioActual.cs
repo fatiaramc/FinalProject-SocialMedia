@@ -54,5 +54,10 @@ namespace Facebook.Models
         {
             _p.descripcion = desc;
         }
+
+        public void ActualizarUsuario()
+        {
+            _p = _dataService.GetPersonaWithId(_p.idPersona)[0];
+        }
     }
 }
