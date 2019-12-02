@@ -6,121 +6,141 @@
 <head>
 	<link href="~/css/style_dash.css" type="text/css" rel="stylesheet" />
 </head>
-	<body>
+<body>
 
-		<div class="header1">
-			<!--<div id="img3" class="header1"><img src="logo.png" id="img3" /></div>-->
-			<div id="img3" class="header1" style="color: white; text-decoration: none; font-size: 30px; font-weight: 900;">Faceboook</div>
-			<div id="searcharea" class="header1"><input placeholder="search here..." type="text" id="searchbox" /></div>
-			<div id="profilearea" class="header1"><a href="~/profile.php"><img src="prof.png" id="profpic" /></a></div>
-			<div id="profilearea1" class="header1"><a href="About">Profile</a></div>
-			<div id="profilearea3" class="header1">|</div>
-			<div id="profilearea4" class="header1">Home</div>
-			<div id="findf" class="header1"><img src="~/frn.png" height="30" /></div>
-			<div id="message" class="header1"><img src="~/chat.png" height="30" /></div>
-			<div id="notification" class="header1"><img src="~/noti.png" height="30" /></div>
-			<div id="profilearea2" class="header1">|</div>
-			<div id="setting" class="header1"><img src="~/set.png" height="30" /></div>
-			<div id="logout" class="header1"><img src="~/lo.png" height="30" /></div>
+	<div class="header1">
+		<div id="img3" class="header1" style="color: white; text-decoration: none; font-size: 30px; font-weight: 900;">Faceboook</div>
+		<div id="searcharea" class="header1"><input placeholder="search here..." type="text" id="searchbox"  style="color:black"/></div>
+		<div id="profilearea" class="header1"><a href="~/profile.php"><img src="~/prof.png" id="profpic" /></a></div>
+		<div id="profilearea1" class="header1"><a href="About">Profile</a></div>
+		<div id="profilearea3" class="header1">|</div>
+		<div id="profilearea4" class="header1"><a href="Contact">Home</a></div>
+		<div id="findf" class="header1"><img src="~/frn.png" height="30" /></div>
+		<div id="message" class="header1"><img src="~/chat.png" height="30" /></div>
+		<div id="notification" class="header1"><img src="~/noti.png" height="30" /></div>
+		<div id="profilearea2" class="header1">|</div>
+		
+		<div id="logout" class="header1">
+			<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+				<img src="~/lo.png" height="30" />
+			</button>
+			<ul class="dropdown-menu">
+				<li><a href="Index">Cerrar sesion</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="header10"></div>
+
+	<p>Use this area to provide additional information.</p>
+	<div>
+
+		<div class="row">
+			<div class="col-lg-3" style="align-content:center">
+				<img src="@UsuarioActual.GetUsuarioActual().GetUser().picture" style="width:200px;height:200px;" />
+			</div>
+			<div class="col-lg-4">
+				<h3>@UsuarioActual.GetUsuarioActual().GetUser().Nombre @UsuarioActual.GetUsuarioActual().GetUser().Apellido</h3>
+				<h5><b>Correo:</b> @UsuarioActual.GetUsuarioActual().GetUser().correo_electronico</h5>
+				<h5><b>Fecha de nacimiento:</b> @UsuarioActual.GetUsuarioActual().GetUser().FechaToString()</h5>
+				@if (@UsuarioActual.GetUsuarioActual().GetUser().descripcion != null)
+				{
+					<h5><b>Descripción: </b>@UsuarioActual.GetUsuarioActual().GetUser().descripcion</h5>
+				}
+				else
+				{
+					<h5>Por el momento no tienes descripción, agrega una!</h5>
+				}
+
+				<a style="float:right; color:cornflowerblue" data-toggle="modal" data-target="#myModal">Cambiar descripción</a>
+
+				<!-- Modal -->
+				<div id="myModal" class="modal fade" role="dialog">
+					<div class="modal-dialog">
+
+						<!-- Modal content-->
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h4 class="modal-title">Editar descripción</h4>
+							</div>
+							<div class="modal-body">
+								<p>Escribe algo sobre tí para que tus amigos te conozcan mejor!</p>
+								<p>Recuerda que para poder ver tus cambios debes refrescar la página.</p>
+								<textarea name="paragraph_text" id="desc" cols="76" rows="10"></textarea>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default" onclick="GuardarDesc()" data-dismiss="modal">Guardar</button>
+								<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+		<div class="row">
+			<div>
+				<h2>Amigos</h2>
+
+				@foreach (var amigo in UsuarioActual.GetUsuarioActual().GetAmigos())
+				{
+					<div class="col-lg-5" style="background-color:whitesmoke">
+						<div class="col-lg-4">
+							<img src="@amigo.picture" style="width:150px; height:150px" />
+						</div>
+						<div class="col-lg-7" style="margin:12pt">
+							<h3>@amigo.Nombre @amigo.Apellido</h3>
+							<h5><b>Correo: </b>@amigo.correo_electronico</h5>
+							<h5><b>Cumpleaños: </b> @amigo.FechaToString()</h5>
+							<!--implementar esto-->
+							<button style="float:right">Agregar amigo</button>
+						</div>
+
+					</div>
+					<div class="col-lg-1"></div>
+				}
+			</div>
 		</div>
 
-		<p>Use this area to provide additional information.</p>
-		<div>
-
-			<div class="row">
-				<div class="col-lg-3" style="align-content:center">
-					<img src="@UsuarioActual.GetUsuarioActual().GetUser().picture" style="width:200px;height:200px;" />
+		@foreach (var post in UsuarioActual.GetUsuarioActual().GetMisPosts())
+		{
+			var yo = @UsuarioActual.GetUsuarioActual().GetUser();
+			<div class="row post1" style=" background-color:whitesmoke; margin-left:200pt; margin-top:30pt">
+				<div class="row" style="padding-left:10px">
+					<div class="col-lg-1"><img src="@yo.picture" style="border-radius: 50%" id="profpic" /></div>
+					<div class="col-lg-10"><p3 id="nombre">@yo.Nombre @yo.Apellido</p3><p2> with </p2><p1> Arup Pegu</p1><p2> and</p2><p1> 15 others.</p1><br><p4>4 hrs.</p4></div>
 				</div>
-				<div class="col-lg-4">
-					<h3>@UsuarioActual.GetUsuarioActual().GetUser().Nombre @UsuarioActual.GetUsuarioActual().GetUser().Apellido</h3>
-					<h5><b>Correo:</b> @UsuarioActual.GetUsuarioActual().GetUser().correo_electronico</h5>
-					<h5><b>Fecha de nacimiento:</b> @UsuarioActual.GetUsuarioActual().GetUser().FechaToString()</h5>
-					@if (@UsuarioActual.GetUsuarioActual().GetUser().descripcion != null)
+				<div class="row" style="padding-left:15px">
+					<p>@post.mensaje</p>
+					@if (@post.imagen != "")
 					{
-						<h5><b>Descripción: </b>@UsuarioActual.GetUsuarioActual().GetUser().descripcion</h5>
+						<img src="@post.imagen" height="411" width="580" />
 					}
-					else
-					{
-						<h5>Por el momento no tienes descripción, agrega una!</h5>
-					}
-
-					<a style="float:right; color:cornflowerblue" data-toggle="modal" data-target="#myModal">Cambiar descripción</a>
-
-					<!-- Modal -->
-					<div id="myModal" class="modal fade" role="dialog">
-						<div class="modal-dialog">
-
-							<!-- Modal content-->
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal">&times;</button>
-									<h4 class="modal-title">Editar descripción</h4>
-								</div>
-								<div class="modal-body">
-									<p>Escribe algo sobre tí para que tus amigos te conozcan mejor!</p>
-									<p>Recuerda que para poder ver tus cambios debes refrescar la página.</p>
-									<textarea name="paragraph_text" id="desc" cols="76" rows="10"></textarea>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-default" onclick="GuardarDesc()" data-dismiss="modal">Guardar</button>
-									<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-								</div>
-							</div>
-
-						</div>
+				</div>
+				<br />
+				<div class="row" style="padding-left:15px">
+					<p6><a style="color:blue" onclick="like(@post.idPost)">Like</a>Share</p6>
+				</div>
+				<!--<hr><p1>Amit Deb</p1><p2> and</p2><p1> 5 others</p1><p2> like this</p2>-->
+				<hr /><p1>@post.likes me gusta</p1>
+				<br /><br />
+				<div class="row">
+					<div class="col-lg-1" id="commentprof2" style="margin-right:8pt;"><img src="@UsuarioActual.GetUsuarioActual().GetUser().picture" id="profpic" /></div>
+					<div class="col-lg-11" id="commentboxpos2">
+						<input type="textarea" placeholder="comment" id="commentbox" style="width:440px" />
+						<a style="color:steelblue" onclick="comentar(@post.idPost)">Comentar</a>
 					</div>
 				</div>
-
-
-			</div>
-			<div class="row">
 				<div>
-					<h2>Amigos</h2>
-
-					@foreach (var amigo in UsuarioActual.GetUsuarioActual().GetAmigos())
+					@foreach (var coment in post.ObtenerComentarios())
 					{
-						<div class="col-lg-5" style="background-color:whitesmoke">
-							<div class="col-lg-4">
-								<img src="@amigo.picture" style="width:150px; height:150px" />
-							</div>
-							<div class="col-lg-7" style="margin:12pt">
-								<h3>@amigo.Nombre @amigo.Apellido</h3>
-								<h5><b>Correo: </b>@amigo.correo_electronico</h5>
-								<h5><b>Cumpleaños: </b> @amigo.FechaToString()</h5>
-							</div>
-
+						<div class="row" style="padding-left:25pt; margin-top:10pt">
+							<div class="col-lg-1" id="commentprof2"><img src="~/prof.png" id="profpic" /></div>
+							<div class="col-lg-10" id="commentboxpos2">@coment.comentario</div>
 						</div>
-						<div class="col-lg-1"></div>
 					}
-				</div>
-			</div>
-
-			@foreach (var post in UsuarioActual.GetUsuarioActual().GetMisPosts())
-			{
-				var yo = @UsuarioActual.GetUsuarioActual().GetUser();
-				<div class="row post1" style=" background-color:whitesmoke; margin-left:200pt; margin-top:30pt">
-					<div class="row" style="padding-left:10px">
-						<div class="col-lg-1"><img src="@yo.picture" style="border-radius: 50%" id="profpic" /></div>
-						<div class="col-lg-10"><p3 id="nombre">@yo.Nombre @yo.Apellido</p3><p2> with </p2><p1> Arup Pegu</p1><p2> and</p2><p1> 15 others.</p1><br><p4>4 hrs.</p4></div>
-					</div>
-					<div class="row" style="padding-left:15px">
-						<p>@post.mensaje</p>
-						@if (@post.imagen != "")
-						{
-							<img src="@post.imagen" height="411" width="580" />
-						}
-					</div>
-					<br />
-					<div class="row" style="padding-left:15px">
-						<p6><button style="color:blue">Like</button>  Comment  Share</p6>
-					</div>
-					<!--<hr><p1>Amit Deb</p1><p2> and</p2><p1> 5 others</p1><p2> like this</p2>-->
-					<hr /><p1>@post.likes me gusta</p1>
-					<br /><br />
-					<div class="row">
-						<div class="col-lg-1" id="commentprof2" style="margin-right:8pt;"><img src="@UsuarioActual.GetUsuarioActual().GetUser().picture" id="profpic" /></div>
-						<div class="col-lg-11" id="commentboxpos2"><input type="textarea" placeholder="comment" id="commentbox" /></div>
-					</div>
 					@for (var j = 0; j < 3; j++)
 					{
 						<div class="row" style="padding-left:25pt; margin-top:10pt">
@@ -130,18 +150,71 @@
 					}
 				</div>
 
+			</div>
+
+		}
+
+
+
+
+	</div>
+	<script>
+			function like(idpost) {
+				alert(idpost);
+				console.log('ya estoy en like');
+				var id = idpost.toString()
+				$.ajax({
+					async: true,
+					type: "POST",
+					url: '@Url.Action("LikePost", "Home")',
+					data: { "Descripcion": id },
+					//data: x.value,
+					dataType:"JSON",
+					success: function (response) {
+						if (response.success) {
+
+							console.log('success');
+							//alert('nombre:',sessionStorage.getItem('nombre'));
+							//window.location = response.redirecturl;
+
+						}
+					}
+				});
+
+				console.log('termine');
+
+
 			}
 
+			function comentar(idpost) {
+				alert(idpost);
+				console.log('ya estoy en comentar');
+				var id = idpost.toString()
+				var c = document.getElementById("commentbox");
+
+				$.ajax({
+					async: true,
+					type: "POST",
+					url: '@Url.Action("CommentPost", "Home")',
+					data: { "id": id, "comentario": c.value },
+					//data: x.value,
+					dataType:"JSON",
+					success: function (response) {
+						if (response.success) {
+
+							console.log('success');
+							//alert('nombre:',sessionStorage.getItem('nombre'));
+							//window.location = response.redirecturl;
+
+						}
+					}
+				});
+
+				console.log('termine');
 
 
-
-		</div>
-		<script>
-			function like() {
-				
-				console.log('ya di like');
-				console.log(post.likes);
 			}
+
 			function GuardarDesc() {
 				var x = document.getElementById("desc");
 				console.log(x.value);
@@ -151,22 +224,21 @@
 					url: '@Url.Action("EditUserDesc", "Home")',
 					data: { "Descripcion": x.value },
 					//data: x.value,
-					dataType:"JSON",	
+					dataType:"JSON",
 					success: function (response) {
 						if (response.success) {
 
 							console.log('success');
-							//alert('nombre:',sessionStorage.getItem('nombre'));					
+							//alert('nombre:',sessionStorage.getItem('nombre'));
 							//window.location = response.redirecturl;
-					
+
 						}
 					}
 				});
-				
+				console.log(x.value);
 				console.log('termine');
-				
-			}
 
-		</script>
-	</body>
+		}
+	</script>
+</body>
 </html>

@@ -236,6 +236,7 @@ namespace Facebook.DataAccess
                     var dataReader = command.ExecuteReader();
                     while (dataReader.Read())
                     {
+                        var id = Convert.ToInt32(dataReader["idPost"].ToString());
                         var mensaje = dataReader["mensaje"].ToString();
                         var likes = Convert.ToInt32(dataReader["likes"].ToString());
                         var img = dataReader["imagen"].ToString();
@@ -250,6 +251,9 @@ namespace Facebook.DataAccess
                             post = new MessagePostCreator(mensaje, idPersona);
                         }
                         var p = post.CreatePost();
+                        
+                        p.idPost = id;
+                        p.likes = likes;
                         result.Add(p);
                     }
                 }
@@ -534,5 +538,233 @@ namespace Facebook.DataAccess
             }
             return result;
         }
+        public List<IPost> GetPostWithId(int idPost)
+        {
+            var result = new List<IPost>();
+            try
+            {
+                if (_client.Open())
+                {
+                    var command = new SqlCommand
+                    {
+                        Connection = _client.GetConnection(),
+                        CommandText = "getpostwithid",
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    var par1 = new SqlParameter("@idPost", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = idPost
+                    };
+
+                    var par2 = new SqlParameter("@haserror", SqlDbType.Bit)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
+                    command.Parameters.Add(par1);
+                    command.Parameters.Add(par2);
+
+                    var dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        var pic = dataReader["imagen"].ToString();
+                        IPost post;
+                        if (pic == "")
+                        {
+                            post = new MessagePost
+                            {
+                                idPost = Convert.ToInt32(dataReader["idPost"].ToString()),
+                                idPersona = Convert.ToInt32(dataReader["idPersona"].ToString()),
+                                mensaje = dataReader["mensaje"].ToString(),
+                                imagen = pic,
+                                likes = Convert.ToInt32(dataReader["likes"].ToString()),
+                            };
+                        }
+                        else
+                        {
+                            post = new ImagePost()
+                            {
+                                idPost = Convert.ToInt32(dataReader["idPost"].ToString()),
+                                idPersona = Convert.ToInt32(dataReader["idPersona"].ToString()),
+                                mensaje = dataReader["mensaje"].ToString(),
+                                imagen = pic,
+                                likes = Convert.ToInt32(dataReader["likes"].ToString()),
+                            };
+                        }
+                        result.Add(post);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.Write(e);
+                //do something
+            }
+            finally
+            {
+                _client.Close();
+            }
+            return result;
+        }
+        public bool LikePost(int idPost)
+        {
+            var result = false;
+            try
+            {
+                if (_client.Open())
+                {
+                    var command = new SqlCommand
+                    {
+                        Connection = _client.GetConnection(),
+                        CommandText = "likePost",
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    var par1 = new SqlParameter("@idPost", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = idPost
+                    };
+                    
+                    var par2 = new SqlParameter("@haserror", SqlDbType.Bit)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
+                    command.Parameters.Add(par1);
+                    command.Parameters.Add(par2);
+                    
+                    command.ExecuteNonQuery();
+
+                    result = !Convert.ToBoolean(command.Parameters["@haserror"].Value.ToString());
+
+                }
+            }
+            catch (Exception e)
+            {
+                result = false;
+            }
+            finally
+            {
+                _client.Close();
+            }
+            return result;
+        }
+
+        public bool AgregarComentario(int idPersona, string mensaje, int idPost)
+        {
+            var result = false;
+            try
+            {
+                if (_client.Open())
+                {
+                    var command = new SqlCommand
+                    {
+                        Connection = _client.GetConnection(),
+                        CommandText = "agregarComentario",
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    var par1 = new SqlParameter("@idPersona", SqlDbType.NVarChar)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = idPersona
+                    };
+
+
+                    var par2 = new SqlParameter("@mensaje", SqlDbType.NVarChar)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = mensaje
+                    };
+
+                    var par3 = new SqlParameter("@idPost", SqlDbType.NVarChar)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = idPost
+                    };
+
+                    var par4 = new SqlParameter("@haserror", SqlDbType.Bit)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
+                    command.Parameters.Add(par1);
+                    command.Parameters.Add(par2);
+                    command.Parameters.Add(par3);
+                    command.Parameters.Add(par4);
+
+                    command.ExecuteNonQuery();
+                    result = !Convert.ToBoolean(command.Parameters["@haserror"].Value.ToString());
+                }
+            }
+            catch (Exception e)
+            {
+                result = false;
+            }
+            finally
+            {
+                _client.Close();
+            }
+            return result;
+        }
+
+        public List<AdapterId> GetComentarios(int idPost)
+        {
+            var result = new List<AdapterId>();
+            try
+            {
+                if (_client.Open())
+                {
+                    var command = new SqlCommand
+                    {
+                        Connection = _client.GetConnection(),
+                        CommandText = "getComentarios",
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    var par1 = new SqlParameter("@idPost", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = idPost
+                    };
+
+                    var par2 = new SqlParameter("@haserror", SqlDbType.Bit)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
+                    command.Parameters.Add(par1);
+                    command.Parameters.Add(par2);
+
+                    var dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        var idPersona = Convert.ToInt32(dataReader["idPersona"].ToString());
+                        var mensaje = dataReader["mensaje"].ToString();
+                        AdapterId comentario = new AdapterId
+                        {
+                            id = Convert.ToString(idPersona),
+                            comentario = mensaje
+                        };
+                        
+                        result.Add(comentario);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.Write(e);
+                //do something
+            }
+            finally
+            {
+                _client.Close();
+            }
+            return result;
+        }
+
     }
 }

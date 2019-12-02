@@ -191,6 +191,25 @@ namespace Facebook.Controllers
         public IActionResult Like(IPost post)
         {
             post.Like();
+            var l = post.likes;
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        public IActionResult LikePost(AdapterDesc idPost)
+        {
+            var id = Convert.ToInt32(idPost.Descripcion);
+            _dataService.LikePost(id);
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        public IActionResult CommentPost(AdapterId idPost)
+        {
+            var id = Convert.ToInt32(idPost.id);
+            var c = idPost.comentario;
+            _dataService.AgregarComentario(UsuarioActual.GetUsuarioActual().GetUser().idPersona, c, id);
+            //_dataService.LikePost(id);
             return Json(new { success = true });
         }
     }

@@ -67,6 +67,7 @@ namespace Facebook.Models
 
         public void ActualizarMisPost()
         {
+
             PostPropios = _dataService.GetPosts(_p.idPersona);
         }
 

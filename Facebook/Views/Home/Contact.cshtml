@@ -12,7 +12,7 @@
 		<div id="profilearea" class="header1"><a href="~/profile.php"><img src="~/prof.png" id="profpic" /></a></div>
 		<div id="profilearea1" class="header1"><a href="About">Profile</a></div>
 		<div id="profilearea3" class="header1">|</div>
-		<div id="profilearea4" class="header1">Home</div>
+		<div id="profilearea4" class="header1"><a href="Contact">Home</a></div>
 		<div id="findf" class="header1"><img src="~/frn.png" height="30" /></div>
 		<div id="message" class="header1"><img src="~/chat.png" height="30" /></div>
 		<div id="notification" class="header1"><img src="~/noti.png" height="30" /></div>
@@ -23,7 +23,7 @@
 					<img src="~/set.png" height="30" />
 				</button>
 				<ul class="dropdown-menu">
-					<li data-toggle="modal" data-target="#myModal" onclick="edit()"><a href="#">Editar perfil</a></li>
+					<li data-toggle="modal" data-target="#myModal" onclick="editPerfil()"><a href="#">Editar perfil</a></li>
 				</ul>
 			</div>
 		</div>
@@ -156,7 +156,7 @@
 	function test() {
 
 	}
-	function edit() {
+	function editPerfil() {
 		console.log('actual', '@UsuarioActual.GetUsuarioActual().GetUser().Nombre');
 		//UsuarioActual.GetUsuarioActual().ActualizarUsuario();
 		var fn = document.getElementById("firstname");

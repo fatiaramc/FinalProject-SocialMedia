@@ -1,4 +1,5 @@
 ﻿using Facebook.DataAccess;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,14 @@ namespace Facebook.Models
     {
         private readonly PersonaDataService _dataService;
 
+        public int idPost { get; set; }
         public string mensaje { get; set; }
         public int idPersona { get; set; }
         public int likes { get; set; }
         public string imagen { get; set; }
+        public List<AdapterId> comentarios { get; set; }
+
+        public ImagePost() { _dataService = PersonaDataService.GetPersonaDataService(); }
 
         public ImagePost(string m, int id, string img)
         {
@@ -22,6 +27,7 @@ namespace Facebook.Models
             likes = 0;
             imagen = img;
             _dataService = PersonaDataService.GetPersonaDataService();
+            //GetComentarios();
         }
         public bool PublishPost()
         {
@@ -32,6 +38,12 @@ namespace Facebook.Models
         public void Like()
         {
             likes++;
+        }
+
+        public List<AdapterId> ObtenerComentarios()
+        {
+            comentarios = _dataService.GetComentarios(idPost);
+            return comentarios;
         }
     }
 }

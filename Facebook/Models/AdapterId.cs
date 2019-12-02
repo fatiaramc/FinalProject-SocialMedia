@@ -6,10 +6,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Facebook.Models
 {
-    public class AdapterDesc
+    public class AdapterId
     {
-        [Display(Name = "Descripcion")]
-        public string Descripcion { set; get; }
-
+        [Display(Name = "id")]
+        public string id { set; get; }
+   
+        [Display(Name = "comentario")]
+        public string comentario { set; get; }
     }
 }
