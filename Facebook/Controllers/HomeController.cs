@@ -24,6 +24,7 @@ namespace Facebook.Controllers
             UsuarioActual.GetUsuarioActual().ActualizarAmigos();
             UsuarioActual.GetUsuarioActual().ActualizarPostAmigos();
             UsuarioActual.GetUsuarioActual().ActualizarPostAmigos();
+            UsuarioActual.GetUsuarioActual().ActualizarPersonas();
             //string connectionString = null;
             //SqlConnection cnn;
             //connectionString = "Data Source = DESKTOP-F4DEC2L\\SQLEXPRESS; initial catalog = Facebook;integrated security = True";
@@ -99,6 +100,16 @@ namespace Facebook.Controllers
         public IActionResult Index1()
         {
             return View("Index1");
+        }
+
+        public IActionResult Perfil()
+        {
+            return View("Perfil");
+        }
+
+        public IActionResult BusquedaHashtag()
+        {
+            return View("BusquedaHashtag");
         }
 
         public IActionResult Privacy()
@@ -269,7 +280,7 @@ namespace Facebook.Controllers
         public IActionResult VerPerfil(AdapterDesc ids)
         {
             var id = Convert.ToInt32(ids.Descripcion);
-            var x = UsuarioActual.GetUsuarioActual().ObtenerPerfilAmigo(id);
+            UsuarioActual.GetUsuarioActual().ObtenerPerfilAmigo(id);
             return Json(new { success = true, redirecturl = Url.Action("Index1", "Home") });
         }
 
@@ -282,15 +293,54 @@ namespace Facebook.Controllers
             {
                 url = "";
             }
-            _dataService.AgregarPost(m, UsuarioActual.GetUsuarioActual().GetUser().idPersona,url);
+            var res = _dataService.AgregarPost(m, UsuarioActual.GetUsuarioActual().GetUser().idPersona,url);
             UsuarioActual.GetUsuarioActual().ActualizarMisPost();
             BusquedaTexto busqueda = new BusquedaTexto(m);
             BuscarHashtag opBuscarHashtag = new BuscarHashtag(busqueda);
+            BuscarEtiqueta opBuscarEtiqueta = new BuscarEtiqueta(busqueda);
             Invoker invoker = new Invoker();
             invoker.recibirOperacion(opBuscarHashtag);
+            invoker.recibirOperacion(opBuscarEtiqueta);
             invoker.realizarOperaciones();
             var q = busqueda.resultado;
+            var e = busqueda.resultadoEtiquetas;
+            foreach(var h in q)
+            {
+                _dataService.AgregarHashtag(h, res.Item2);
+            }
+            foreach(var ee in e)
+            {
+                Persona amigo = UsuarioActual.GetUsuarioActual().GetAmigos().Find(item => item.Nombre == ee.Item1 && item.Apellido == ee.Item2);
+                if(amigo != null)
+                {
+                    _dataService.AgregarEtiqueta(res.Item2, amigo.idPersona);
+                }
+            }
+            
             return Json(new { success = true });
+        }
+
+       [HttpPost]
+       public IActionResult BuscarHashtags(AdapterDesc d)
+       {
+            var hash = d.Descripcion;
+            var res = _dataService.GetHashtags(hash);
+            var list = new List<IPost>();
+            foreach(var id in res)
+            {
+                var aux = _dataService.GetPostWithId(id)[0];
+                list.Add(aux);
+            }
+            UsuarioActual.GetUsuarioActual().SetBusquedaHashtags(list);
+            return Json(new { success = true, redirecturl = Url.Action("BusquedaHashtag", "Home") });
+       }
+
+        [HttpPost]
+        public IActionResult VerPerfilAlClick(AdapterDesc idPersona)
+        {
+            var id = Convert.ToInt32(idPersona.Descripcion);
+            UsuarioActual.GetUsuarioActual().ObtenerPerfilAmigo(id);
+            return Json(new { success = true, redirecturl = Url.Action("Perfil", "Home") });
         }
     }
 }

@@ -1,0 +1,95 @@
+﻿<html>
+<head>
+	<link type="text/css" rel="stylesheet" href="~/css/style_dash.css" />
+</head>
+<body>
+	@if (UsuarioActual.GetUsuarioActual().GetBusquedaHashtags().Count == 0)
+	{
+		<h1>No se encontraron resultados</h1>
+	}
+	@foreach (var post in UsuarioActual.GetUsuarioActual().GetBusquedaHashtags())
+	{
+		<h2>Busqueda Hashtag</h2>
+		var yo = @UsuarioActual.GetUsuarioActual().GetAmigo(post.idPersona);
+		<div class="row post1" style=" background-color:whitesmoke; margin-left:200pt; margin-top:30pt">
+			<div class="row" style="padding-left:10px">
+				<div class="col-lg-1"><img src="@yo.picture" style="border-radius: 50%" id="profpic" /></div>
+				<div class="col-lg-10">
+					<p3 id="nombre"><a style="color:steelblue" onclick="verPerfil4(@yo.idPersona)">@yo.Nombre @yo.Apellido</a></p3>
+					@if (post.GetEtiquetas().Count > 0)
+					{
+						<p2> with </p2>
+					}
+
+					@foreach (var etiqueta in post.GetEtiquetas())
+					{
+						<p1><a style="color:steelblue" onclick="verPerfil4(@etiqueta.idPersona)">@etiqueta.Nombre @etiqueta.Apellido</a> </p1>
+					}
+					<br><p4>4 hrs.</p4>
+				</div>
+			</div>
+			<div class="row" style="padding-left:15px">
+				@foreach (var hashtag in post.GetHashtags())
+				{
+					<p1><a style="color:steelblue" onclick="buscarHashtags4('@hashtag')">#@hashtag</a> </p1>
+				}
+				<p>@post.mensaje</p>
+				@if (@post.imagen != "")
+				{
+					<img src="@post.imagen" height="411" width="580" />
+				}
+			</div>
+			<hr /><p1>@post.likes me gusta</p1>
+			<br /><br />
+			<div>
+				@foreach (var coment in post.ObtenerComentarios())
+				{
+					<div class="row" style="padding-left:25pt; margin-top:10pt">
+						<div class="col-lg-1" id="commentprof2"><img src="@coment.user.picture" id="profpic" /></div>
+						<div class="col-lg-10" id="commentboxpos2">@coment.comentario</div>
+					</div>
+				}
+			</div>
+
+		</div>
+	}
+
+		<script>
+			function buscarHashtags4(hashtag) {
+				alert(hashtag);
+				$.ajax({
+					async: true,
+					type: "POST",
+					url: '@Url.Action("BuscarHashtags", "Home")',
+					data: { "descripcion": hashtag },
+					dataType:"JSON",
+					success: function (response) {
+						if (response.success) {
+
+							console.log('success');
+							alert("Buscando hashtag");
+							window.location = response.redirecturl;
+						}
+					}
+				});
+
+			}
+			function verPerfil4(idPersona) {
+				$.ajax({
+					async: true,
+					type: "POST",
+					url: '@Url.Action("VerPerfilAlClick", "Home")',
+					data: { "descripcion": idPersona },
+					dataType:"JSON",
+					success: function (response) {
+						if (response.success) {
+
+							console.log('success');
+							window.location = response.redirecturl;
+						}
+					}
+				});
+			}
+		</script>
+</body>
+</html>

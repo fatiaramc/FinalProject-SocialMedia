@@ -16,6 +16,8 @@ namespace Facebook.Models
         private static List<IPost> PostAmigos { get; set; }
         private static List<Persona> Busqueda { get; set; }
         private static Persona _amigoPerfil { get; set; }
+        public static List<IPost> BusquedaHashtag { get; set; }
+        public static List<Persona> Personas { get; set; }
 
 
         private UsuarioActual()
@@ -25,8 +27,9 @@ namespace Facebook.Models
             PostAmigos = new List<IPost>();
         }
 
-        public static UsuarioActual GetUsuarioActual() {
-            if(_userActual == null)
+        public static UsuarioActual GetUsuarioActual()
+        {
+            if (_userActual == null)
             {
                 _userActual = new UsuarioActual();
             }
@@ -37,7 +40,8 @@ namespace Facebook.Models
         {
             return _p;
         }
-        public void SetUserActual(Persona p) {
+        public void SetUserActual(Persona p)
+        {
             _p = p;
             ActualizarAmigos();
             ActualizarMisPost();
@@ -77,7 +81,7 @@ namespace Facebook.Models
         public void ActualizarPostAmigos()
         {
             PostAmigos = new List<IPost>();
-            foreach(var amigo in Amigos)
+            foreach (var amigo in Amigos)
             {
                 PostAmigos.AddRange(_dataService.GetPosts(amigo.idPersona));
             }
@@ -109,10 +113,44 @@ namespace Facebook.Models
             return Busqueda;
         }
 
-        public Persona ObtenerPerfilAmigo(int id)
+        public void ObtenerPerfilAmigo(int id)
         {
             _amigoPerfil = _dataService.GetPersonaWithId(id)[0];
+        }
+
+        public Persona GetPerfilAmigo()
+        {
             return _amigoPerfil;
+        }
+
+        public List<IPost> GetBusquedaHashtags()
+        {
+            return BusquedaHashtag;
+        }
+
+        public void SetBusquedaHashtags(List<IPost> list)
+        {
+            BusquedaHashtag = list;
+        }
+
+        public void ActualizarPersonas()
+        {
+            Personas = _dataService.GetPersonas();
+        }
+        public List<Persona> GetPersonas()
+        {
+            return Personas;
+        }
+
+        public List<Persona> GetAmigosdeAmigo(int idPersona)
+        {
+            var amigos = _dataService.GetAmigos(idPersona);
+            return amigos;
+        }
+
+        public List<IPost> GetPostAmigo(int idPersona)
+        {
+            return _dataService.GetPosts(idPersona);
         }
     }
 }

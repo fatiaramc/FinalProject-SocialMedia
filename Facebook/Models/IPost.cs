@@ -14,11 +14,15 @@ namespace Facebook.Models
         int likes { get; set; }
         string imagen { get; set; }
         List<Comentario> comentarios { get; set; }
+        List<string> hashtags { get; set; }
+        List<Persona> etiquetas { get; set; }
 
         bool PublishPost();
 
         void Like();
 
         List<Comentario> ObtenerComentarios();
+        List<string> GetHashtags();
+        List<Persona> GetEtiquetas();
     }
 }

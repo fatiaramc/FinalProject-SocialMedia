@@ -1,7 +1,264 @@
-﻿
-@{
-    ViewData["Title"] = "Perfil";
+﻿@{
+	var perfil = UsuarioActual.GetUsuarioActual().GetPerfilAmigo();
 }
-
 <h2>Perfil</h2>
 
+<h1>@perfil.Nombre @perfil.Apellido</h1>
+
+<html>
+<head>
+	<link href="~/css/style_dash.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+
+	<div class="header1">
+		<div id="img3" class="header1" style="color: white; text-decoration: none; font-size: 30px; font-weight: 900;">Faceboook</div>
+		<div id="profilearea" class="header1"><a href="~/profile.php"><img src="~/prof.png" id="profpic" /></a></div>
+		<div id="profilearea1" class="header1"><a href="About">Profile</a></div>
+		<div id="profilearea3" class="header1">|</div>
+		<div id="profilearea4" class="header1"><a href="Contact">Home</a></div>
+		<div id="findf" class="header1"><img src="~/frn.png" height="30" /></div>
+		<div id="message" class="header1"><img src="~/chat.png" height="30" /></div>
+		<div id="notification" class="header1"><img src="~/noti.png" height="30" /></div>
+		<div id="profilearea2" class="header1">|</div>
+
+		<div id="logout" class="header1">
+			<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+				<img src="~/lo.png" height="30" />
+			</button>
+			<ul class="dropdown-menu">
+				<li><a href="Index">Cerrar sesion</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="header10"></div>
+
+	<div>
+		<div class="row" style="margin-bottom:20pt">
+			<div class="col-lg-3" style="align-content:center">
+				<img src="@perfil.picture" style="width:200px;height:200px;" />
+			</div>
+			<div class="col-lg-4">
+				<h3>@perfil.Nombre @perfil.Apellido</h3>
+				<h5><b>Correo:</b> @perfil.correo_electronico</h5>
+				<h5><b>Fecha de nacimiento:</b> @perfil.FechaToString()</h5>
+				@if (@perfil.descripcion != null)
+				{
+					<h5><b>Descripción: </b>@perfil.descripcion</h5>
+				}
+				else
+				{
+					<h5>Por el momento no tienes descripción, agrega una!</h5>
+				}
+
+			</div>
+			<div class="row"></div>
+			<div class="row">
+				<div>
+					<h2>Amigos</h2>
+
+					@foreach (var amigo in UsuarioActual.GetUsuarioActual().GetAmigosdeAmigo(perfil.idPersona))
+					{
+						<div class="col-lg-5" style="background-color:whitesmoke; margin-top:15pt">
+							<div class="col-lg-4">
+								<img src="@amigo.picture" style="width:150px; height:150px" />
+							</div>
+							<div class="col-lg-7" style="margin:12pt">
+								<h3 id="nombre"><a style="color:steelblue" onclick="verPerfil2(@amigo.idPersona)">@amigo.Nombre @amigo.Apellido</a></h3>
+								<h5><b>Correo: </b>@amigo.correo_electronico</h5>
+								<h5><b>Cumpleaños: </b> @amigo.FechaToString()</h5>
+							</div>
+
+						</div>
+						<div class="col-lg-1"></div>
+					}
+				</div>
+			</div>
+
+			@foreach (var post in UsuarioActual.GetUsuarioActual().GetPostAmigo(perfil.idPersona))
+			{
+				var yo = @perfil;
+				<div class="row post1" style=" background-color:whitesmoke; margin-left:200pt; margin-top:30pt">
+					<div class="row" style="padding-left:10px">
+						<div class="col-lg-1"><img src="@yo.picture" style="border-radius: 50%" id="profpic" /></div>
+						<div class="col-lg-10">
+							<p3 id="nombre"><a style="color:steelblue" onclick="verPerfil2(@yo.idPersona)">@yo.Nombre @yo.Apellido</a></p3>
+							@if (post.GetEtiquetas().Count > 0)
+							{
+								<p2> with </p2>
+							}
+
+							@foreach (var etiqueta in post.GetEtiquetas())
+							{
+								<p1><a style="color:steelblue" onclick="verPerfil2(@etiqueta.idPersona)">@etiqueta.Nombre @etiqueta.Apellido</a> </p1>
+							}
+						</div>
+					</div>
+					<div class="row" style="padding-left:15px">
+
+						@foreach (var hashtag in post.GetHashtags())
+						{
+							<p1><a style="color:steelblue" onclick="buscarHashtags2('@hashtag')">#@hashtag</a> </p1>
+						}
+						<p>@post.mensaje</p>
+						@if (@post.imagen != "")
+						{
+							<img src="@post.imagen" height="411" width="580" />
+						}
+					</div>
+					<br />
+					<div class="row" style="padding-left:15px">
+						<p6><a style="color:darkslateblue" onclick="like(@post.idPost);">Like</a> | Share</p6>
+					</div>
+					<!--<hr><p1>Amit Deb</p1><p2> and</p2><p1> 5 others</p1><p2> like this</p2>-->
+					<hr /><p1>@post.likes me gusta</p1>
+					<br /><br />
+					@{
+						var i = "commentbox" + post.idPost;
+					}
+					<div class="row">
+						<div class="col-lg-1" id="commentprof2" style="margin-right:8pt;"><img src="@perfil.picture" id="profpic" /></div>
+						<div class="col-lg-11" id="commentboxpos2">
+							<input type="textarea" placeholder="comment" id=@i style="width:440px" />
+							<a style="color:steelblue" onclick="comentar(@post.idPost)">Comentar</a>
+						</div>
+					</div>
+					<div>
+						@foreach (var coment in post.ObtenerComentarios())
+						{
+							<div class="row" style="padding-left:25pt; margin-top:10pt">
+								<div class="col-lg-1" id="commentprof2"><img src="@coment.user.picture" id="profpic" /></div>
+								<div class="col-lg-10" id="commentboxpos2">@coment.comentario</div>
+							</div>
+						}
+					</div>
+
+				</div>
+
+			}
+
+
+
+
+		</div>
+		<script>
+			function like(idpost) {
+				var id = idpost.toString()
+				$.ajax({
+					async: true,
+					type: "POST",
+					url: '@Url.Action("LikePost", "Home")',
+					data: { "Descripcion": id },
+					//data: x.value,
+					dataType:"JSON",
+					success: function (response) {
+						if (response.success) {
+
+							console.log('success');
+							alert("Diste like al post, para ver tus cambios actualiza la pagina");
+							//alert('nombre:',sessionStorage.getItem('nombre'));
+							//window.location = response.redirecturl;
+
+						}
+					}
+				});
+
+				console.log('termine');
+
+
+			}
+
+			function comentar(idpost) {
+				alert(idpost);
+				console.log('ya estoy en comentar');
+				var id = idpost.toString()
+				var k = "commentbox" + id;
+				var c = document.getElementById(k);
+
+				alert(c.value);
+
+				$.ajax({
+					async: true,
+					type: "POST",
+					url: '@Url.Action("CommentPost", "Home")',
+					data: { "id": id, "comentario": c.value },
+					//data: x.value,
+					dataType:"JSON",
+					success: function (response) {
+						if (response.success) {
+
+							console.log('success');
+							//alert('nombre:',sessionStorage.getItem('nombre'));
+							//window.location = response.redirecturl;
+							alert("Tu comentario se ha publicado exitosamente");
+						}
+					}
+				});
+				document.getElementById(k).value = "";
+				console.log('termine');
+
+
+			}
+
+			function GuardarDesc() {
+				var x = document.getElementById("desc");
+				console.log(x.value);
+				$.ajax({
+					async: true,
+					type: "POST",
+					url: '@Url.Action("EditUserDesc", "Home")',
+					data: { "Descripcion": x.value },
+					//data: x.value,
+					dataType:"JSON",
+					success: function (response) {
+						if (response.success) {
+
+							console.log('success');
+							//alert('nombre:',sessionStorage.getItem('nombre'));
+							//window.location = response.redirecturl;
+
+						}
+					}
+				});
+				console.log(x.value);
+				console.log('termine');
+
+			}
+			function verPerfil2(idPersona) {
+				$.ajax({
+					async: true,
+					type: "POST",
+					url: '@Url.Action("VerPerfilAlClick", "Home")',
+					data: { "descripcion": idPersona },
+					dataType:"JSON",
+					success: function (response) {
+						if (response.success) {
+
+							console.log('success');
+							window.location = response.redirecturl;
+						}
+					}
+				});
+			}
+			function buscarHashtags2(hashtag) {
+				alert(hashtag);
+				$.ajax({
+					async: true,
+					type: "POST",
+					url: '@Url.Action("BuscarHashtags", "Home")',
+					data: { "descripcion": hashtag },
+					dataType:"JSON",
+					success: function (response) {
+						if (response.success) {
+
+							console.log('success');
+							alert("Buscando hashtag");
+							window.location = response.redirecturl;
+						}
+					}
+				});
+
+			}
+		</script>
+</body>
+</html>

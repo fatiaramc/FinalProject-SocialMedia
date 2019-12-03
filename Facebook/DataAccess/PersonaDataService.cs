@@ -320,9 +320,9 @@ namespace Facebook.DataAccess
             return result;
         }
 
-        public bool AgregarPost(string mensaje, int id, string img)
+        public Tuple<bool,int> AgregarPost(string mensaje, int id, string img)
         {
-            var result = false;
+            var result = Tuple.Create(false,-1);
             try
             {
                 if (_client.Open())
@@ -349,7 +349,11 @@ namespace Facebook.DataAccess
                         Direction = ParameterDirection.Input,
                         Value = id
                     };
-                    var par4 = new SqlParameter("@haserror", SqlDbType.Bit)
+                    var par4 = new SqlParameter("@idPost", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Output
+                    };  
+                    var par5 = new SqlParameter("@haserror", SqlDbType.Bit)
                     {
                         Direction = ParameterDirection.Output
                     };
@@ -358,15 +362,18 @@ namespace Facebook.DataAccess
                     command.Parameters.Add(par2);
                     command.Parameters.Add(par3);
                     command.Parameters.Add(par4);
+                    command.Parameters.Add(par5);
 
                     command.ExecuteNonQuery();
-                    result = !Convert.ToBoolean(command.Parameters["@haserror"].Value.ToString());
+                    bool b = !Convert.ToBoolean(command.Parameters["@haserror"].Value.ToString());
+                    int idPost = Convert.ToInt32(command.Parameters["@idPost"].Value.ToString());
+                    result = Tuple.Create(b,idPost);
                 }
             }
             catch(Exception e)
             {
                 Console.Write("--------------EROOOOOOOOOOOOOOOOR", e,"TERMINE EL EROOOOOOR");
-                result = false;
+                result = Tuple.Create(false,-1);
             }
             finally
             {
@@ -883,11 +890,11 @@ namespace Facebook.DataAccess
                     var command = new SqlCommand
                     {
                         Connection = _client.GetConnection(),
-                        CommandText = "getHashtag",
+                        CommandText = "getHashtags",
                         CommandType = CommandType.StoredProcedure
                     };
 
-                    var par1 = new SqlParameter("@hashtag", SqlDbType.Int)
+                    var par1 = new SqlParameter("@hashtag", SqlDbType.NVarChar)
                     {
                         Direction = ParameterDirection.Input,
                         Value = hashtag
@@ -934,7 +941,7 @@ namespace Facebook.DataAccess
                         CommandType = CommandType.StoredProcedure
                     };
 
-                    var par1 = new SqlParameter("@mensaje", SqlDbType.NVarChar)
+                    var par1 = new SqlParameter("@hashtag", SqlDbType.NVarChar)
                     {
                         Direction = ParameterDirection.Input,
                         Value = hashtag
@@ -969,7 +976,102 @@ namespace Facebook.DataAccess
             }
             return result;
         }
+        public List<int> GetEtiquetas(int idPost)
+        {
+            //ids de publicaciones
+            var result = new List<int>();
+            try
+            {
+                if (_client.Open())
+                {
+                    var command = new SqlCommand
+                    {
+                        Connection = _client.GetConnection(),
+                        CommandText = "getEtiquetas",
+                        CommandType = CommandType.StoredProcedure
+                    };
 
+                    var par1 = new SqlParameter("@idPost", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = idPost
+                    };
 
+                    var par2 = new SqlParameter("@haserror", SqlDbType.Bit)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
+                    command.Parameters.Add(par1);
+                    command.Parameters.Add(par2);
+
+                    var dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        var id = Convert.ToInt32(dataReader["idPersona"].ToString());
+                        result.Add(id);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.Write(e);
+                //do something
+            }
+            finally
+            {
+                _client.Close();
+            }
+            return result;
+        }
+        public bool AgregarEtiqueta(int idPost, int idPersona)
+        {
+            var result = false;
+            try
+            {
+                if (_client.Open())
+                {
+                    var command = new SqlCommand
+                    {
+                        Connection = _client.GetConnection(),
+                        CommandText = "addEtiqueta",
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    var par1 = new SqlParameter("@idPost", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = idPost
+                    };
+
+                    var par2 = new SqlParameter("@idPersona", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = idPersona
+                    };
+
+                    var par3 = new SqlParameter("@haserror", SqlDbType.Bit)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
+                    command.Parameters.Add(par1);
+                    command.Parameters.Add(par2);
+                    command.Parameters.Add(par3);
+
+                    command.ExecuteNonQuery();
+                    result = !Convert.ToBoolean(command.Parameters["@haserror"].Value.ToString());
+                }
+            }
+            catch (Exception e)
+            {
+                result = false;
+            }
+            finally
+            {
+                _client.Close();
+            }
+            return result;
+        }
     }
 }

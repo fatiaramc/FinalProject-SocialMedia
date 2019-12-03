@@ -69,47 +69,52 @@
 
 
 	<div class="row post1" style="margin-left:200pt; margin-top:30pt	">
-		<!--<div id="column-1" class="post">update status | add photos/videos | create photo album<hr></div>-->
 		<div id="column-1" class="post"><a style="color:darkslateblue" onclick="setType(1)">update status</a> | <a style="color:darkslateblue" onclick="setType(2)">add photos/videos</a> <hr></div>
 		<div class="post"><textarea id="postbox" placeholder="What's in your mind" type="text"></textarea></div>
 		<div id="urlImagen" style="visibility:hidden;"><textarea id="url" placeholder="Insert here the url for your image" style="width:580px; margin-top:5pt"></textarea></div>
 		<hr />
-		<div id="postpos" class="post" style="float:right; margin-bottom:20pt"><input type="submit" id="buttonpost" value="post" onclick="publishPost()"/></div>
-
-
+		<div id="postpos" class="post" style="float:right; margin-bottom:20pt"><input type="submit" id="buttonpost" value="post" onclick="publishPost()" /></div>
 	</div>
 	
 
-	<!--for (var i = 0; i < 1; i++)-->
 	@foreach (var post in UsuarioActual.GetUsuarioActual().GetPostsAmigos())
 	{
-		<!--<div class="row">
-			<div class="post1">
-				<img src="~/prof.png" id="profpic" /><br><br><img src="" height="411" width="580" /><br><br><p6>Like  Comment  Share</p6><br><hr><p1>Amit Deb</p1><p2> and</p2><p1> 5 others</p1><p2> like this</p2>
-				<div id="post2text" class="post2 row"><p3 id="nombre"> </p3><p2> with </p2><p1> Arup Pegu</p1><p2> and</p2><p1> 15 others.</p1><br><p4>4 hrs.</p4></div>
-				<div id="commentprof2" class="post2 row"><img src="~/prof.png" id="profpic" /></div>
-				<div id="commentboxpos2" class="post2 row"><input type="textarea" placeholder="comment" id="commentbox" /></div>
-			</div>
-		</div>-->
 		var amigo = UsuarioActual.GetUsuarioActual().GetAmigo(post.idPersona);
 		
 	<div class="row post1" style=" background-color:whitesmoke; margin-left:200pt; margin-top:30pt">
 		<div class="row" style="padding-left:10px">
 			<div class="col-lg-1"><img src="@amigo.picture" style="border-radius: 50%" id="profpic" /></div>
-			<div class="col-lg-10"><p3 id="nombre">@amigo.Nombre @amigo.Apellido</p3><p2> with </p2><p1> Arup Pegu</p1><p2> and</p2><p1> 15 others.</p1><br><p4>4 hrs.</p4></div>
+			<div class="col-lg-10">
+				<p3 id="nombre"><a style="color:steelblue" onclick="verPerfil(@amigo.idPersona)">@amigo.Nombre @amigo.Apellido</a></p3>
+				@if (post.GetEtiquetas().Count > 0)
+				{
+					<p2> with </p2>
+				}
+
+				@foreach (var etiqueta in post.GetEtiquetas())
+				{
+					<p1><a style="color:steelblue" onclick="verPerfil(@etiqueta.idPersona)">@etiqueta.Nombre @etiqueta.Apellido</a> </p1>
+				}
+				<br><p4>4 hrs.</p4>
+			</div>
 		</div>
 		<div class="row" style="padding-left:15px">
-			<p>@post.mensaje</p>
-			@if (@post.imagen != null)
+
+			@foreach (var hashtag in post.GetHashtags())
+			{
+				<p1><a style="color:steelblue" onclick="buscarHashtags('@hashtag')">#@hashtag</a> </p1>
+			}
+			<p style="margin-top:10pt">@post.mensaje</p>
+			@if (@post.imagen != "")
 			{
 				<img src="@post.imagen" height="411" width="580" />
 			}
 		</div>
 		<br />
 		<div class="row" style="padding-left:15px">
-			<p6>Like  Comment  Share</p6>
+			<p6><a style="color:darkslateblue" onclick="like2(@post.idPost);">Like</a> | Share</p6>
 		</div>
-		<hr><p1>Amit Deb</p1><p2> and</p2><p1> 5 others</p1><p2> like this</p2>
+		<hr /><p1>@post.likes me gusta</p1>
 		<br /><br />
 		@{
 			var i = "commentbox" + post.idPost;
@@ -303,32 +308,90 @@
 		console.log('termine');
 	}
 	function comentar1(idpost) {
-				alert(idpost);
-				console.log('ya estoy en comentar');
+		alert(idpost);
+		console.log('ya estoy en comentar');
+		var id = idpost.toString()
+		var k = "commentbox" + id;
+		var c = document.getElementById(k);
+
+		alert(c.value);
+
+		$.ajax({
+			async: true,
+			type: "POST",
+			url: '@Url.Action("CommentPost", "Home")',
+			data: { "id": id, "comentario": c.value },
+			//data: x.value,
+			dataType:"JSON",
+			success: function (response) {
+				if (response.success) {
+
+					console.log('success');
+					//alert('nombre:',sessionStorage.getItem('nombre'));
+					//window.location = response.redirecturl;
+					alert("Tu comentario se ha publicado exitosamente");
+				}
+			}
+		});
+		document.getElementById(k).value = "";
+		console.log('termine');
+	}
+	function buscarHashtags(hashtag) {
+		alert(hashtag);
+		$.ajax({
+			async: true,
+			type: "POST",
+			url: '@Url.Action("BuscarHashtags", "Home")',
+			data: { "descripcion": hashtag },
+			dataType:"JSON",
+			success: function (response) {
+				if (response.success) {
+
+					console.log('success');
+					alert("Buscando hashtag");
+					window.location = response.redirecturl;
+				}
+			}
+		});
+
+	}
+	function verPerfil(idPersona) {
+		$.ajax({
+			async: true,
+			type: "POST",
+			url: '@Url.Action("VerPerfilAlClick", "Home")',
+			data: { "descripcion": idPersona },
+			dataType:"JSON",
+			success: function (response) {
+				if (response.success) {
+
+					console.log('success');
+					window.location = response.redirecturl;
+				}
+			}
+		});
+	}
+	function like2(idpost) {
 				var id = idpost.toString()
-				var k = "commentbox" + id;
-				var c = document.getElementById(k);
-
-				alert(c.value);
-
 				$.ajax({
 					async: true,
 					type: "POST",
-					url: '@Url.Action("CommentPost", "Home")',
-					data: { "id": id, "comentario": c.value },
+					url: '@Url.Action("LikePost", "Home")',
+					data: { "Descripcion": id },
 					//data: x.value,
 					dataType:"JSON",
 					success: function (response) {
 						if (response.success) {
 
 							console.log('success');
+							alert("Diste like al post, para ver tus cambios actualiza la pagina");
 							//alert('nombre:',sessionStorage.getItem('nombre'));
 							//window.location = response.redirecturl;
-							alert("Tu comentario se ha publicado exitosamente");
+
 						}
 					}
 				});
-				document.getElementById(k).value = "";
+
 				console.log('termine');
 
 
