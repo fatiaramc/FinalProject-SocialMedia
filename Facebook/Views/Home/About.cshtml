@@ -86,7 +86,7 @@
 
 				@foreach (var amigo in UsuarioActual.GetUsuarioActual().GetAmigos())
 				{
-					<div class="col-lg-5" style="background-color:whitesmoke">
+					<div class="col-lg-5" style="background-color:whitesmoke; margin-top:15pt">
 						<div class="col-lg-4">
 							<img src="@amigo.picture" style="width:150px; height:150px" />
 						</div>
@@ -94,8 +94,6 @@
 							<h3>@amigo.Nombre @amigo.Apellido</h3>
 							<h5><b>Correo: </b>@amigo.correo_electronico</h5>
 							<h5><b>Cumpleaños: </b> @amigo.FechaToString()</h5>
-							<!--implementar esto-->
-							<button style="float:right">Agregar amigo</button>
 						</div>
 
 					</div>
@@ -121,15 +119,18 @@
 				</div>
 				<br />
 				<div class="row" style="padding-left:15px">
-					<p6><a style="color:blue" onclick="like(@post.idPost)">Like</a>Share</p6>
+					<p6><a style="color:darkslateblue" onclick="like(@post.idPost);">Like</a> | Share</p6>
 				</div>
 				<!--<hr><p1>Amit Deb</p1><p2> and</p2><p1> 5 others</p1><p2> like this</p2>-->
 				<hr /><p1>@post.likes me gusta</p1>
 				<br /><br />
+				@{
+					var i = "commentbox" + post.idPost;
+				}
 				<div class="row">
 					<div class="col-lg-1" id="commentprof2" style="margin-right:8pt;"><img src="@UsuarioActual.GetUsuarioActual().GetUser().picture" id="profpic" /></div>
 					<div class="col-lg-11" id="commentboxpos2">
-						<input type="textarea" placeholder="comment" id="commentbox" style="width:440px" />
+						<input type="textarea" placeholder="comment" id=@i style="width:440px" />
 						<a style="color:steelblue" onclick="comentar(@post.idPost)">Comentar</a>
 					</div>
 				</div>
@@ -137,15 +138,8 @@
 					@foreach (var coment in post.ObtenerComentarios())
 					{
 						<div class="row" style="padding-left:25pt; margin-top:10pt">
-							<div class="col-lg-1" id="commentprof2"><img src="~/prof.png" id="profpic" /></div>
+							<div class="col-lg-1" id="commentprof2"><img src="@coment.user.picture" id="profpic" /></div>
 							<div class="col-lg-10" id="commentboxpos2">@coment.comentario</div>
-						</div>
-					}
-					@for (var j = 0; j < 3; j++)
-					{
-						<div class="row" style="padding-left:25pt; margin-top:10pt">
-							<div class="col-lg-1" id="commentprof2"><img src="~/prof.png" id="profpic" /></div>
-							<div class="col-lg-10" id="commentboxpos2">Hola esto es un comment</div>
 						</div>
 					}
 				</div>
@@ -160,8 +154,6 @@
 	</div>
 	<script>
 			function like(idpost) {
-				alert(idpost);
-				console.log('ya estoy en like');
 				var id = idpost.toString()
 				$.ajax({
 					async: true,
@@ -174,6 +166,7 @@
 						if (response.success) {
 
 							console.log('success');
+							alert("Diste like al post, para ver tus cambios actualiza la pagina");
 							//alert('nombre:',sessionStorage.getItem('nombre'));
 							//window.location = response.redirecturl;
 
@@ -190,7 +183,10 @@
 				alert(idpost);
 				console.log('ya estoy en comentar');
 				var id = idpost.toString()
-				var c = document.getElementById("commentbox");
+				var k = "commentbox" + id;
+				var c = document.getElementById(k);
+
+				alert(c.value);
 
 				$.ajax({
 					async: true,
@@ -205,11 +201,11 @@
 							console.log('success');
 							//alert('nombre:',sessionStorage.getItem('nombre'));
 							//window.location = response.redirecturl;
-
+							alert("Tu comentario se ha publicado exitosamente");
 						}
 					}
 				});
-
+				document.getElementById(k).value = "";
 				console.log('termine');
 
 

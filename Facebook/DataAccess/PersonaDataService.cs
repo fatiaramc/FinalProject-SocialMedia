@@ -84,6 +84,56 @@ namespace Facebook.DataAccess
             return result;
         }
 
+        public List<Persona> GetPersonas()
+        {
+            var result = new List<Persona>();
+            try
+            {
+                if (_client.Open())
+                {
+                    var command = new SqlCommand
+                    {
+                        Connection = _client.GetConnection(),
+                        CommandText = "getPersonas",
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    var par1 = new SqlParameter("@hasherror", SqlDbType.Bit)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
+                    command.Parameters.Add(par1);
+
+                    var dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        var amigo = new Persona
+                        {
+                            idPersona = Convert.ToInt32(dataReader["idPersona"].ToString()),
+                            Nombre = dataReader["Nombre"].ToString(),
+                            Apellido = dataReader["Apellido"].ToString(),
+                            correo_electronico = dataReader["correo_electronico"].ToString(),
+                            fecha_nac = dataReader["fecha_nac"].ToString(),
+                            picture = dataReader["picture"].ToString(),
+                            descripcion = dataReader["descripcion"].ToString(),
+                        };
+                        result.Add(amigo);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.Write(e);
+                //do something
+            }
+            finally
+            {
+                _client.Close();
+            }
+            return result;
+        }
+
         public bool RegistrarPersona(Persona persona)
         {
             var result = false;
@@ -711,9 +761,9 @@ namespace Facebook.DataAccess
             return result;
         }
 
-        public List<AdapterId> GetComentarios(int idPost)
+        public List<Comentario> GetComentarios(int idPost)
         {
-            var result = new List<AdapterId>();
+            var result = new List<Comentario>();
             try
             {
                 if (_client.Open())
@@ -744,13 +794,23 @@ namespace Facebook.DataAccess
                     {
                         var idPersona = Convert.ToInt32(dataReader["idPersona"].ToString());
                         var mensaje = dataReader["mensaje"].ToString();
-                        AdapterId comentario = new AdapterId
+                        var u = new Persona
                         {
-                            id = Convert.ToString(idPersona),
-                            comentario = mensaje
+                            idPersona = Convert.ToInt32(dataReader["idPersona"].ToString()),
+                            Nombre = dataReader["Nombre"].ToString(),
+                            Apellido = dataReader["Apellido"].ToString(),
+                            correo_electronico = dataReader["correo_electronico"].ToString(),
+                            contraseña = dataReader["contraseña"].ToString(),
+                            fecha_nac = dataReader["fecha_nac"].ToString(),
+                            picture = dataReader["picture"].ToString(),
+                            descripcion = dataReader["descripcion"].ToString(),
                         };
-                        
-                        result.Add(comentario);
+                        Comentario coment = new Comentario
+                        {
+                            user = u,
+                            comentario = mensaje,
+                        };
+                        result.Add(coment);
                     }
                 }
             }
@@ -765,6 +825,151 @@ namespace Facebook.DataAccess
             }
             return result;
         }
+        public bool EliminarAmigo(int id1, int id2)
+        {
+            var result = false;
+            try
+            {
+                if (_client.Open())
+                {
+                    var command = new SqlCommand
+                    {
+                        Connection = _client.GetConnection(),
+                        CommandText = "borrarAmigo",
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    var par1 = new SqlParameter("@id1", SqlDbType.NVarChar)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = id1
+                    };
+                    var par2 = new SqlParameter("@id2", SqlDbType.NVarChar)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = id2
+                    };
+                    var par3 = new SqlParameter("@haserror", SqlDbType.Bit)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
+                    command.Parameters.Add(par1);
+                    command.Parameters.Add(par2);
+                    command.Parameters.Add(par3);
+
+                    command.ExecuteNonQuery();
+                    result = !Convert.ToBoolean(command.Parameters["@haserror"].Value.ToString());
+                }
+            }
+            catch
+            {
+                result = false;
+            }
+            finally
+            {
+                _client.Close();
+            }
+            return result;
+        }
+        public List<int> GetHashtags(string hashtag)
+        {
+            //ids de publicaciones
+            var result = new List<int>();
+            try
+            {
+                if (_client.Open())
+                {
+                    var command = new SqlCommand
+                    {
+                        Connection = _client.GetConnection(),
+                        CommandText = "getHashtag",
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    var par1 = new SqlParameter("@hashtag", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = hashtag
+                    };
+
+                    var par2 = new SqlParameter("@haserror", SqlDbType.Bit)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
+                    command.Parameters.Add(par1);
+                    command.Parameters.Add(par2);
+
+                    var dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        var id = Convert.ToInt32(dataReader["idPost"].ToString());
+                        result.Add(id);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.Write(e);
+                //do something
+            }
+            finally
+            {
+                _client.Close();
+            }
+            return result;
+        }
+        public bool AgregarHashtag(string hashtag, int idPost)
+        {
+            var result = false;
+            try
+            {
+                if (_client.Open())
+                {
+                    var command = new SqlCommand
+                    {
+                        Connection = _client.GetConnection(),
+                        CommandText = "addHashtags",
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    var par1 = new SqlParameter("@mensaje", SqlDbType.NVarChar)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = hashtag
+                    };
+
+                    var par2 = new SqlParameter("@idPost", SqlDbType.NVarChar)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = idPost
+                    };
+
+                    var par3 = new SqlParameter("@haserror", SqlDbType.Bit)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
+                    command.Parameters.Add(par1);
+                    command.Parameters.Add(par2);
+                    command.Parameters.Add(par3);
+
+                    command.ExecuteNonQuery();
+                    result = !Convert.ToBoolean(command.Parameters["@haserror"].Value.ToString());
+                }
+            }
+            catch (Exception e)
+            {
+                result = false;
+            }
+            finally
+            {
+                _client.Close();
+            }
+            return result;
+        }
+
 
     }
 }

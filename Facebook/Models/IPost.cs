@@ -13,12 +13,12 @@ namespace Facebook.Models
         int idPersona { get; set; }
         int likes { get; set; }
         string imagen { get; set; }
-        List<AdapterId> comentarios { get; set; }
+        List<Comentario> comentarios { get; set; }
 
         bool PublishPost();
 
         void Like();
 
-        List<AdapterId> ObtenerComentarios();
+        List<Comentario> ObtenerComentarios();
     }
 }

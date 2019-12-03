@@ -1,14 +1,16 @@
 ﻿<html>
 <head>
 	<link type="text/css" rel="stylesheet" href="~/css/style_dash.css" />
-
 </head>
 <body onload="test()">
-
-
 	<div class="header1">
 		<div id="img3" class="header1" style="color: white; text-decoration: none; font-size: 30px; font-weight: 900;">Faceboook</div>
-		<div id="searcharea" class="header1"><input placeholder="search here..." type="text" id="searchbox" /></div>
+		<div id="searcharea" class="header1">
+			<form action="#" onsubmit="search()">
+				<input placeholder="search here..." type="text" id="searchbox1" style="color:black" />
+				<input type="submit" style="display:none"/>
+			</form>
+		</div>
 		<div id="profilearea" class="header1"><a href="~/profile.php"><img src="~/prof.png" id="profpic" /></a></div>
 		<div id="profilearea1" class="header1"><a href="About">Profile</a></div>
 		<div id="profilearea3" class="header1">|</div>
@@ -65,12 +67,18 @@
 		<div id="side24" class="bodyn">Create event</div>
 	</div>
 
-	<!--<div class="post">
-		<div id="column-1" class="post">update status | add photos/videos | create photo album<hr><br><br><br><br><br><br><hr></div>
-		<div id="postpos" class="post"><input type="submit" id="buttonpost" value="post" /></div>
-		<div id="postboxpos" class="post"><textarea placeholder="What's in your mind" id="postbox" type="text"></textarea></div>
 
-	</div>-->
+	<div class="row post1" style="margin-left:200pt; margin-top:30pt	">
+		<!--<div id="column-1" class="post">update status | add photos/videos | create photo album<hr></div>-->
+		<div id="column-1" class="post"><a style="color:darkslateblue" onclick="setType(1)">update status</a> | <a style="color:darkslateblue" onclick="setType(2)">add photos/videos</a> <hr></div>
+		<div class="post"><textarea id="postbox" placeholder="What's in your mind" type="text"></textarea></div>
+		<div id="urlImagen" style="visibility:hidden;"><textarea id="url" placeholder="Insert here the url for your image" style="width:580px; margin-top:5pt"></textarea></div>
+		<hr />
+		<div id="postpos" class="post" style="float:right; margin-bottom:20pt"><input type="submit" id="buttonpost" value="post" onclick="publishPost()"/></div>
+
+
+	</div>
+	
 
 	<!--for (var i = 0; i < 1; i++)-->
 	@foreach (var post in UsuarioActual.GetUsuarioActual().GetPostsAmigos())
@@ -103,17 +111,25 @@
 		</div>
 		<hr><p1>Amit Deb</p1><p2> and</p2><p1> 5 others</p1><p2> like this</p2>
 		<br /><br />
+		@{
+			var i = "commentbox" + post.idPost;
+		}
 		<div class="row">
 			<div class="col-lg-1" id="commentprof2" style="margin-right:8pt;"><img src="@UsuarioActual.GetUsuarioActual().GetUser().picture" id="profpic" /></div>
-			<div class="col-lg-11" id="commentboxpos2"><input type="textarea" placeholder="comment" id="commentbox" /></div>
-		</div>
-		@for (var j = 0; j < 3; j++)
-		{
-			<div class="row" style="padding-left:25pt; margin-top:10pt">
-				<div class="col-lg-1" id="commentprof2"><img src="~/prof.png" id="profpic" /></div>
-				<div class="col-lg-10" id="commentboxpos2">Hola esto es un comment</div>
+			<div class="col-lg-11" id="commentboxpos2">
+				<input type="textarea" placeholder="comment" id=@i style="width:440px" />
+				<a style="color:steelblue" onclick="comentar1(@post.idPost)">Comentar</a>
 			</div>
-		}
+		</div>
+		<div>
+			@foreach (var coment in post.ObtenerComentarios())
+			{
+				<div class="row" style="padding-left:25pt; margin-top:10pt">
+					<div class="col-lg-1" id="commentprof2"><img src="@coment.user.picture" id="profpic" /></div>
+					<div class="col-lg-10" id="commentboxpos2">@coment.comentario</div>
+				</div>
+			}
+		</div>
 	</div>
 		
 	}
@@ -155,6 +171,32 @@
 <script>
 	function test() {
 
+	}
+	function search() {
+		event.preventDefault();
+		var busqueda = document.getElementById("searchbox1");
+		alert("buscando", busqueda.value);
+		$.ajax({
+			async: true,
+			type: "POST",
+			url: '@Url.Action("SearchFriend", "Home")',
+			data: { "id": busqueda.value, "comentario": "1" },
+			//data: x.value,
+			dataType:"JSON",
+			success: function (response) {
+				if (response.success) {
+
+					console.log('success');
+					console.log(response.res);
+					window.location = response.redirecturl;
+					//alert('nombre:',sessionStorage.getItem('nombre'));
+					//window.location = response.redirecturl;
+
+				}
+			}
+		});
+
+				console.log('termine');
 	}
 	function editPerfil() {
 		console.log('actual', '@UsuarioActual.GetUsuarioActual().GetUser().Nombre');
@@ -229,6 +271,69 @@
 		psw.value = "";
 		desc.value = "";
 	}
+	function setType(tipo) {
+		//1 mensaje
+		//2 imagen
+		var k = document.getElementById("urlImagen");
+		if (tipo == 1)
+			k.style.visibility = "hidden";
+		else if (tipo == 2)
+			k.style.visibility = "visible";
+	}
+	function publishPost() {
+		var mensaje = document.getElementById("postbox").value;
+		var url = document.getElementById("url").value;
+		alert(mensaje);
+		alert(url);
+		$.ajax({
+			async: true,
+			type: "POST",
+			url: '@Url.Action("AgregarPost", "Home")',
+			data: { "id": mensaje, "comentario": url },
+			dataType:"JSON",
+			success: function (response) {
+				if (response.success) {
+					console.log('success');
+					alert("Tu publicación se ha publicado exitosamente");
+				}
+			}
+		});
+		document.getElementById("postbox").value = "";
+		document.getElementById("url").value = "";
+		console.log('termine');
+	}
+	function comentar1(idpost) {
+				alert(idpost);
+				console.log('ya estoy en comentar');
+				var id = idpost.toString()
+				var k = "commentbox" + id;
+				var c = document.getElementById(k);
+
+				alert(c.value);
+
+				$.ajax({
+					async: true,
+					type: "POST",
+					url: '@Url.Action("CommentPost", "Home")',
+					data: { "id": id, "comentario": c.value },
+					//data: x.value,
+					dataType:"JSON",
+					success: function (response) {
+						if (response.success) {
+
+							console.log('success');
+							//alert('nombre:',sessionStorage.getItem('nombre'));
+							//window.location = response.redirecturl;
+							alert("Tu comentario se ha publicado exitosamente");
+						}
+					}
+				});
+				document.getElementById(k).value = "";
+				console.log('termine');
+
+
+			}
+
 
 
 </script>

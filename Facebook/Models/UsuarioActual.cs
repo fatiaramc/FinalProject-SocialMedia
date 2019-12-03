@@ -14,6 +14,9 @@ namespace Facebook.Models
         private static List<Persona> Amigos { get; set; }
         private static List<IPost> PostPropios { get; set; }
         private static List<IPost> PostAmigos { get; set; }
+        private static List<Persona> Busqueda { get; set; }
+        private static Persona _amigoPerfil { get; set; }
+
 
         private UsuarioActual()
         {
@@ -93,6 +96,23 @@ namespace Facebook.Models
         public Persona GetAmigo(int id)
         {
             return _dataService.GetPersonaWithId(id)[0];
+        }
+
+        public void Buscar(List<Persona> result)
+        {
+            Busqueda = new List<Persona>();
+            Busqueda = result;
+        }
+
+        public List<Persona> GetBusquedas()
+        {
+            return Busqueda;
+        }
+
+        public Persona ObtenerPerfilAmigo(int id)
+        {
+            _amigoPerfil = _dataService.GetPersonaWithId(id)[0];
+            return _amigoPerfil;
         }
     }
 }

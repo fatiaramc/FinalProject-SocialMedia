@@ -16,7 +16,7 @@ namespace Facebook.Models
         public int idPersona { get; set; }
         public int likes { get; set; }
         public string imagen { get; set; }
-        public List<AdapterId> comentarios { get; set; }
+        public List<Comentario> comentarios { get; set; }
 
         public ImagePost() { _dataService = PersonaDataService.GetPersonaDataService(); }
 
@@ -40,10 +40,11 @@ namespace Facebook.Models
             likes++;
         }
 
-        public List<AdapterId> ObtenerComentarios()
+        public List<Comentario> ObtenerComentarios()
         {
             comentarios = _dataService.GetComentarios(idPost);
             return comentarios;
         }
+
     }
 }

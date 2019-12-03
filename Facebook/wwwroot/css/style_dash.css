@@ -115,6 +115,18 @@ p7 {
 	background-repeat: no-repeat;
 }
 
+#searchbox1 {
+	width: 500px;
+	height: 26px;
+	background: white;
+	padding: 5px;
+	outline: none;
+	border-radius: 10px/10px;
+	background-image: url(sr.png);
+	background-position: 465px;
+	background-repeat: no-repeat;
+}
+
 #searcharea {
 	top: 17px;
 	left: 240px;
@@ -374,11 +386,11 @@ p7 {
 }
 
 #column-1 {
-	left: 0px;
-	top: 0px;
+	//left: 0px;
+	//top: 0px;
 	background: white;
-	width: 580px;
-	height: 200px;
+	//width: 580px;
+	//height: 200px;
 	border-radius: 3px/3px;
 	font-size: 15px;
 	font-family: verdana;
@@ -389,8 +401,8 @@ p7 {
 }
 
 #postpos {
-	left: 450px;
-	top: 170px;
+	//left: 450px;
+	//top: 170px;
 	width: 85px;
 	height: 30px;
 }
@@ -404,16 +416,16 @@ p7 {
 }
 
 #postboxpos {
-	top: 45px;
-	left: 10px;
+	//top: 45px;
+	//left: 10px;
 	height: 105px;
 	width: 580px;
 	z-index: 5;
 }
 
 #post1pos {
-	left: 80px;
-	top: 500px;
+	//left: 80px;
+	//top: 500px;
 	width: 100px;
 	height: 30px;
 }
@@ -439,26 +451,26 @@ p7 {
 }
 
 .post {
-	top: 70px;
-	left: 240px;
-	position: absolute;
-	width: 600px;
-	height: 210px;
+	//top: 70px;
+	//left: 240px;
+	//position: absolute;
+	//width: 600px;
+	//height: 210px;
 }
 
 .postp {
-	top: 440px;
-	left: 350px;
-	position: absolute;
+	//top: 440px;
+	//left: 350px;
+	//position: absolute;
 	width: 600px;
 	height: 210px;
 	display: none;
 }
 
 .postpx {
-	top: 440px;
-	left: 350px;
-	position: absolute;
+	//top: 440px;
+	//left: 350px;
+	//position: absolute;
 	width: 600px;
 	height: 210px;
 	-webkit-box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
@@ -466,9 +478,9 @@ p7 {
 }
 
 .post00 {
-	top: 70px;
-	left: 240px;
-	position: absolute;
+	//top: 70px;
+	//left: 240px;
+	//position: absolute;
 	width: 600px;
 	height: 210px;
 	-webkit-box-shadow: 0 3px 8px rgba(0, 0, 0, .25);

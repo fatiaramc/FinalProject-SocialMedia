@@ -21,6 +21,9 @@ namespace Facebook.Controllers
 
         public HomeController()
         {
+            UsuarioActual.GetUsuarioActual().ActualizarAmigos();
+            UsuarioActual.GetUsuarioActual().ActualizarPostAmigos();
+            UsuarioActual.GetUsuarioActual().ActualizarPostAmigos();
             //string connectionString = null;
             //SqlConnection cnn;
             //connectionString = "Data Source = DESKTOP-F4DEC2L\\SQLEXPRESS; initial catalog = Facebook;integrated security = True";
@@ -91,6 +94,11 @@ namespace Facebook.Controllers
             //ViewData["UserName"] = _usuario.Nombre;
             //j = sessionStorage.getItem('idusuario');
             return View("Contact");
+        }
+
+        public IActionResult Index1()
+        {
+            return View("Index1");
         }
 
         public IActionResult Privacy()
@@ -166,6 +174,7 @@ namespace Facebook.Controllers
         {
             Persona p = UsuarioActual.GetUsuarioActual().GetUser();
             p.descripcion = desc.Descripcion;
+            UsuarioActual.GetUsuarioActual().GetUser().descripcion = desc.Descripcion;
 
             var result = DataAccess.PersonaDataService.GetPersonaDataService().EditarPersona(p);
             if (!result)
@@ -200,6 +209,11 @@ namespace Facebook.Controllers
         {
             var id = Convert.ToInt32(idPost.Descripcion);
             _dataService.LikePost(id);
+            //var p = UsuarioActual.GetUsuarioActual().GetMisPosts().Find(item => item.idPost == id);
+            //var l = p.likes;
+            //p.likes++;
+            UsuarioActual.GetUsuarioActual().ActualizarMisPost();
+            UsuarioActual.GetUsuarioActual().ActualizarPostAmigos();
             return Json(new { success = true });
         }
 
@@ -210,6 +224,72 @@ namespace Facebook.Controllers
             var c = idPost.comentario;
             _dataService.AgregarComentario(UsuarioActual.GetUsuarioActual().GetUser().idPersona, c, id);
             //_dataService.LikePost(id);
+            UsuarioActual.GetUsuarioActual().ActualizarMisPost();
+            UsuarioActual.GetUsuarioActual().ActualizarPostAmigos();
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        public IActionResult SearchFriend(AdapterId busqueda)
+        {
+            UsuarioActual.GetUsuarioActual().ActualizarAmigos();
+
+            var bus = busqueda.id;
+            var op = Convert.ToInt32(busqueda.comentario);
+            SearchClass search = new SearchClass(new SearchName(), bus);
+            if (op == 2) search = new SearchClass(new SearchLastname(), bus);
+            else if (op == 3) search = new SearchClass(new SearchCorreo(), bus);
+            var result = search.Search();
+            UsuarioActual.GetUsuarioActual().Buscar(result);
+            return Json(new { success = true, res = result, redirecturl = Url.Action("Index1", "Home") });
+        }
+
+        [HttpPost]
+        public IActionResult AgregarAmigo(AdapterId ids)
+        {
+            var id1 = Convert.ToInt32(ids.id);
+            var id2 = Convert.ToInt32(ids.comentario);
+
+            _dataService.AgregarAmigo(id1, id2);
+            return Json(new { success = true });
+
+        }
+        [HttpPost]
+        public IActionResult EliminarAmigo(AdapterId ids)
+        {
+            var id1 = Convert.ToInt32(ids.id);
+            var id2 = Convert.ToInt32(ids.comentario);
+
+            _dataService.EliminarAmigo(id1, id2);
+            return Json(new { success = true });
+
+        }
+
+        [HttpPost]
+        public IActionResult VerPerfil(AdapterDesc ids)
+        {
+            var id = Convert.ToInt32(ids.Descripcion);
+            var x = UsuarioActual.GetUsuarioActual().ObtenerPerfilAmigo(id);
+            return Json(new { success = true, redirecturl = Url.Action("Index1", "Home") });
+        }
+
+        [HttpPost]
+        public IActionResult AgregarPost(AdapterId r)
+        {
+            var m = r.id;
+            var url = r.comentario;
+            if(url == null)
+            {
+                url = "";
+            }
+            _dataService.AgregarPost(m, UsuarioActual.GetUsuarioActual().GetUser().idPersona,url);
+            UsuarioActual.GetUsuarioActual().ActualizarMisPost();
+            BusquedaTexto busqueda = new BusquedaTexto(m);
+            BuscarHashtag opBuscarHashtag = new BuscarHashtag(busqueda);
+            Invoker invoker = new Invoker();
+            invoker.recibirOperacion(opBuscarHashtag);
+            invoker.realizarOperaciones();
+            var q = busqueda.resultado;
             return Json(new { success = true });
         }
     }

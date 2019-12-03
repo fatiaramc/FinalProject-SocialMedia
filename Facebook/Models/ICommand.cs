@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace Facebook.Models
 {
-    public interface SearchStrategy
+    public interface ICommand
     {
-        List<Persona> BuscarAmigos(string busqueda);
+        void execute();
     }
 }
