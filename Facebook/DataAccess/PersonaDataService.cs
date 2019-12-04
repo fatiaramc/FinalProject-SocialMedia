@@ -1073,5 +1073,124 @@ namespace Facebook.DataAccess
             }
             return result;
         }
+        public List<NotificacionModel> GetNotificaciones(int _id1)
+        {
+            //ids de publicaciones
+            var result = new List<NotificacionModel>();
+            try
+            {
+                if (_client.Open())
+                {
+                    var command = new SqlCommand
+                    {
+                        Connection = _client.GetConnection(),
+                        CommandText = "getNotificaciones",
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    var par1 = new SqlParameter("@id1", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = _id1
+                    };
+
+                    var par2 = new SqlParameter("@haserror", SqlDbType.Bit)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
+                    command.Parameters.Add(par1);
+                    command.Parameters.Add(par2);
+
+                    var dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        var not = new NotificacionModel
+                        {
+                            id1 = _id1,
+                            idPost = Convert.ToInt32(dataReader["idPost"].ToString()),
+                            id2 = Convert.ToInt32(dataReader["id2"].ToString()),
+                            tipo = Convert.ToInt32(dataReader["tipo"].ToString()),
+                        };
+                        
+                        result.Add(not);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.Write(e);
+                //do something
+            }
+            finally
+            {
+                _client.Close();
+            }
+            return result;
+        }
+        public bool AgregarNotificacion(int id1, int id2, int idPost, int tipo)
+        {
+            var result = false;
+            try
+            {
+                if (_client.Open())
+                {
+                    var command = new SqlCommand
+                    {
+                        Connection = _client.GetConnection(),
+                        CommandText = "addNotificacion",
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    var par1 = new SqlParameter("@id1", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = id1
+                    };
+
+                    var par2 = new SqlParameter("@id2", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = id2
+                    };
+
+                    var par3 = new SqlParameter("@idPost", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = idPost
+                    };
+
+                    var par4 = new SqlParameter("@tipo", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = tipo
+                    };
+
+                    var par5 = new SqlParameter("@haserror", SqlDbType.Bit)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
+                    command.Parameters.Add(par1);
+                    command.Parameters.Add(par2);
+                    command.Parameters.Add(par3);
+                    command.Parameters.Add(par4);
+                    command.Parameters.Add(par5);
+
+                    command.ExecuteNonQuery();
+                    result = !Convert.ToBoolean(command.Parameters["@haserror"].Value.ToString());
+                }
+            }
+            catch (Exception e)
+            {
+                result = false;
+            }
+            finally
+            {
+                _client.Close();
+            }
+            return result;
+        }
     }
+
 }

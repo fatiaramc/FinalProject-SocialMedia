@@ -19,12 +19,16 @@ namespace Facebook.Controllers
 
         public UsuarioActual _usuarioActual = null;
 
+        Notificacion notificacion;
+
+
         public HomeController()
         {
             UsuarioActual.GetUsuarioActual().ActualizarAmigos();
             UsuarioActual.GetUsuarioActual().ActualizarPostAmigos();
             UsuarioActual.GetUsuarioActual().ActualizarPostAmigos();
             UsuarioActual.GetUsuarioActual().ActualizarPersonas();
+            UsuarioActual.GetUsuarioActual().ActualizarNotificaciones();
             //string connectionString = null;
             //SqlConnection cnn;
             //connectionString = "Data Source = DESKTOP-F4DEC2L\\SQLEXPRESS; initial catalog = Facebook;integrated security = True";
@@ -35,6 +39,8 @@ namespace Facebook.Controllers
         public IActionResult Index()
         {
             UsuarioActual.GetUsuarioActual().ClearUser();
+
+            
 
             /*var x = _dataService.RegistrarPersona(new Persona
             {
@@ -146,6 +152,7 @@ namespace Facebook.Controllers
                 {
                     _usuario = x[0];
                     _usuarioActual.SetUserActual(_usuario);
+                    UsuarioActual.GetUsuarioActual().ActualizarNotificaciones();
                     return Json(new { success = true, redirecturl = Url.Action("Contact", "Home"), responseText = "Done", usuario = _usuario });
                     //return Json(new { success = true, redirecturl = Url.Action("About", "Home"), responseText = "Done", usuario = _usuario });
                 }
@@ -153,7 +160,6 @@ namespace Facebook.Controllers
                 {
                     //error en contraseña
                 }
-                
 
             }
             return Content("Error");
@@ -225,6 +231,13 @@ namespace Facebook.Controllers
             //p.likes++;
             UsuarioActual.GetUsuarioActual().ActualizarMisPost();
             UsuarioActual.GetUsuarioActual().ActualizarPostAmigos();
+
+            var post = _dataService.GetPostWithId(id)[0];
+            notificacion = new NotificacionLike(post.idPersona, UsuarioActual.GetUsuarioActual().GetUser().idPersona, id);
+            notificacion.setTipo();
+            notificacion = new Like(notificacion);
+            notificacion.setTipo();
+            notificacion.Notificar();
             return Json(new { success = true });
         }
 
@@ -314,6 +327,11 @@ namespace Facebook.Controllers
                 if(amigo != null)
                 {
                     _dataService.AgregarEtiqueta(res.Item2, amigo.idPersona);
+                    //id dueño, id que etiqueta, post
+                    notificacion = new NotificacionLike(amigo.idPersona, UsuarioActual.GetUsuarioActual().GetUser().idPersona, res.Item2);
+                    notificacion = new Mencion(notificacion);
+                    notificacion.setTipo();
+                    notificacion.Notificar();
                 }
             }
             
@@ -326,6 +344,7 @@ namespace Facebook.Controllers
             var hash = d.Descripcion;
             var res = _dataService.GetHashtags(hash);
             var list = new List<IPost>();
+
             foreach(var id in res)
             {
                 var aux = _dataService.GetPostWithId(id)[0];

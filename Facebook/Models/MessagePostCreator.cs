@@ -10,6 +10,7 @@ namespace Facebook.Models
         public string _m;
         public int _id;
         public string _img;
+        
 
         public MessagePostCreator(string m, int id)
         {

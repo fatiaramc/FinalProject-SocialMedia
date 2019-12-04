@@ -15,9 +15,29 @@
 		<div id="profilearea1" class="header1"><a href="About">Profile</a></div>
 		<div id="profilearea3" class="header1">|</div>
 		<div id="profilearea4" class="header1"><a href="Contact">Home</a></div>
-		<div id="findf" class="header1"><img src="~/frn.png" height="30" /></div>
-		<div id="message" class="header1"><img src="~/chat.png" height="30" /></div>
-		<div id="notification" class="header1"><img src="~/noti.png" height="30" /></div>
+
+		<div id="notification" class="header1">
+			<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+				<img src="~/noti.png" height="30" />
+			</button>
+			<ul class="dropdown-menu">
+				@foreach (var n in UsuarioActual.GetUsuarioActual().GetNotificaciones())
+				{
+
+					<li style="color:black">
+						<p>@UsuarioActual.GetUsuarioActual().GetAmigo(n.id2).Nombre @UsuarioActual.GetUsuarioActual().GetAmigo(n.id2).Apellido</p>
+						@if (n.tipo == 1)
+						{
+						<p>ha dado like a tu publicación!</p>
+						}
+						@if (n.tipo == 2)
+						{
+						<p>te ha mencionado en su publicación!</p>
+						}
+					</li>
+				}
+			</ul>
+		</div>
 		<div id="profilearea2" class="header1">|</div>
 		<div class="dropdown">
 			<div id="setting" class="header1">
@@ -40,7 +60,7 @@
 	</div>
 
 
-	<div class="bodyn">
+	<!--<div class="bodyn">
 		<div id="side1" class="bodyn"><img src="prof.png" id="profpic" />Profile</div>
 		<div id="side2" class="bodyn">edit profile</div>
 		<div id="side3" class="bodyn">News feed</div>
@@ -65,8 +85,12 @@
 		<div id="side22" class="bodyn">Pages and public</div>
 		<div id="side23" class="bodyn">EVENTS</div>
 		<div id="side24" class="bodyn">Create event</div>
-	</div>
+	</div>-->
 
+	<div class="row">
+		<h3>Bienvenido a Facebook!</h3>
+		<h6>La temperatura actual en @UsuarioActual.GetUsuarioActual().ObtenerProxy().name es de: @UsuarioActual.GetUsuarioActual().ObtenerProxy().main.temp °</h6>
+	</div>
 
 	<div class="row post1" style="margin-left:200pt; margin-top:30pt	">
 		<div id="column-1" class="post"><a style="color:darkslateblue" onclick="setType(1)">update status</a> | <a style="color:darkslateblue" onclick="setType(2)">add photos/videos</a> <hr></div>

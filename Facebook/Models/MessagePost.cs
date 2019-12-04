@@ -19,6 +19,7 @@ namespace Facebook.Models
         public List<Comentario> comentarios { get; set; }
         public List<string> hashtags { get; set; }
         public List<Persona> etiquetas { get; set; }
+        private string _state;
 
         public MessagePost() { _dataService = PersonaDataService.GetPersonaDataService(); }
 
@@ -29,6 +30,8 @@ namespace Facebook.Models
             likes = 0;
             imagen = img;
             _dataService = PersonaDataService.GetPersonaDataService();
+
+            _state = "Creando";
             //GetComentarios();
         }
 
@@ -82,6 +85,30 @@ namespace Facebook.Models
             
 
             return etiquetas;
+        }
+        public void SetState(string value)
+        {
+            _state = value;
+        }
+
+        public string GetState()
+        {
+            return _state;
+        }
+
+        public IMemento Save()
+        {
+            return new ConcreteMemento(this._state);
+        }
+
+        public void Restore(IMemento memento)
+        {
+            if (!(memento is ConcreteMemento))
+            {
+                throw new Exception("Uknown memento class " + memento.ToString());
+            }
+
+            _state = memento.GetState();
         }
     }
 }

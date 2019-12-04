@@ -24,5 +24,11 @@ namespace Facebook.Models
         List<Comentario> ObtenerComentarios();
         List<string> GetHashtags();
         List<Persona> GetEtiquetas();
+
+        void SetState(string value);
+        string GetState();
+        IMemento Save();
+        void Restore(IMemento memento);
+
     }
 }

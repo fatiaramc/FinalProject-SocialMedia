@@ -18,12 +18,14 @@ namespace Facebook.Models
         private static Persona _amigoPerfil { get; set; }
         public static List<IPost> BusquedaHashtag { get; set; }
         public static List<Persona> Personas { get; set; }
-
+        private static IProxy Proxy { get; set; }
+        public static List<NotificacionModel> _notificaciones { get; set; }
 
         private UsuarioActual()
         {
             _p = new Persona();
             _dataService = PersonaDataService.GetPersonaDataService();
+            Proxy = new Proxy();
             PostAmigos = new List<IPost>();
         }
 
@@ -151,6 +153,22 @@ namespace Facebook.Models
         public List<IPost> GetPostAmigo(int idPersona)
         {
             return _dataService.GetPosts(idPersona);
+        }
+
+        public WeatherObject ObtenerProxy()
+        {
+            var response = Proxy.weather("mexico");
+            return response;
+        }
+
+        public void ActualizarNotificaciones()
+        {
+            _notificaciones = _dataService.GetNotificaciones(_p.idPersona);
+        }
+
+        public List<NotificacionModel> GetNotificaciones()
+        {
+            return _notificaciones;
         }
     }
 }
