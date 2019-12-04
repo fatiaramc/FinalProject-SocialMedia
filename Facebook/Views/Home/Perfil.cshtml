@@ -233,7 +233,6 @@
 					dataType:"JSON",
 					success: function (response) {
 						if (response.success) {
-
 							console.log('success');
 							window.location = response.redirecturl;
 						}
@@ -241,7 +240,6 @@
 				});
 			}
 			function buscarHashtags2(hashtag) {
-				alert(hashtag);
 				$.ajax({
 					async: true,
 					type: "POST",
@@ -250,7 +248,6 @@
 					dataType:"JSON",
 					success: function (response) {
 						if (response.success) {
-
 							console.log('success');
 							alert("Buscando hashtag");
 							window.location = response.redirecturl;

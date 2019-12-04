@@ -361,5 +361,17 @@ namespace Facebook.Controllers
             UsuarioActual.GetUsuarioActual().ObtenerPerfilAmigo(id);
             return Json(new { success = true, redirecturl = Url.Action("Perfil", "Home") });
         }
+
+        [HttpPost]
+        public IActionResult ValidateEmail(AdapterDesc d)
+        {
+            var email = d.Descripcion;
+            var results = _dataService.GetPersonas().FindAll(item => item.correo_electronico == email);
+            if(results.Count == 0)
+            {
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
+        }
     }
 }

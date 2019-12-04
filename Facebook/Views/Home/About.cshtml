@@ -175,15 +175,12 @@
 					type: "POST",
 					url: '@Url.Action("LikePost", "Home")',
 					data: { "Descripcion": id },
-					//data: x.value,
 					dataType:"JSON",
 					success: function (response) {
 						if (response.success) {
 
 							console.log('success');
 							alert("Diste like al post, para ver tus cambios actualiza la pagina");
-							//alert('nombre:',sessionStorage.getItem('nombre'));
-							//window.location = response.redirecturl;
 
 						}
 					}
@@ -201,21 +198,16 @@
 				var k = "commentbox" + id;
 				var c = document.getElementById(k);
 
-				alert(c.value);
-
 				$.ajax({
 					async: true,
 					type: "POST",
 					url: '@Url.Action("CommentPost", "Home")',
 					data: { "id": id, "comentario": c.value },
-					//data: x.value,
 					dataType:"JSON",
 					success: function (response) {
 						if (response.success) {
 
 							console.log('success');
-							//alert('nombre:',sessionStorage.getItem('nombre'));
-							//window.location = response.redirecturl;
 							alert("Tu comentario se ha publicado exitosamente");
 						}
 					}
@@ -234,14 +226,10 @@
 					type: "POST",
 					url: '@Url.Action("EditUserDesc", "Home")',
 					data: { "Descripcion": x.value },
-					//data: x.value,
 					dataType:"JSON",
 					success: function (response) {
 						if (response.success) {
-
 							console.log('success');
-							//alert('nombre:',sessionStorage.getItem('nombre'));
-							//window.location = response.redirecturl;
 
 						}
 					}
@@ -251,7 +239,6 @@
 
 		}
 		function buscarHashtags3(hashtag) {
-			alert(hashtag);
 			$.ajax({
 				async: true,
 				type: "POST",
@@ -262,7 +249,7 @@
 					if (response.success) {
 
 						console.log('success');
-						alert("Buscando hashtag");
+						//alert("Buscando hashtag");
 						window.location = response.redirecturl;
 					}
 				}
@@ -278,7 +265,6 @@
 				dataType:"JSON",
 				success: function (response) {
 					if (response.success) {
-
 						console.log('success');
 						window.location = response.redirecturl;
 					}

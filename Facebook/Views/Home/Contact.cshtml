@@ -204,13 +204,11 @@
 	function search() {
 		event.preventDefault();
 		var busqueda = document.getElementById("searchbox1");
-		alert("buscando", busqueda.value);
 		$.ajax({
 			async: true,
 			type: "POST",
 			url: '@Url.Action("SearchFriend", "Home")',
 			data: { "id": busqueda.value, "comentario": "1" },
-			//data: x.value,
 			dataType:"JSON",
 			success: function (response) {
 				if (response.success) {
@@ -218,9 +216,6 @@
 					console.log('success');
 					console.log(response.res);
 					window.location = response.redirecturl;
-					//alert('nombre:',sessionStorage.getItem('nombre'));
-					//window.location = response.redirecturl;
-
 				}
 			}
 		});
@@ -281,16 +276,11 @@
 					type: "POST",
 					url: '@Url.Action("EditUser", "Home")',
 					data: person,
-					//data: x.value,
 					dataType:"JSON",	
 					success: function (response) {
 						if (response.success) {
-
 							console.log('success');
 							console.log('@UsuarioActual.GetUsuarioActual().GetUser().Nombre');
-							//alert('nombre:',sessionStorage.getItem('nombre'));					
-							//window.location = response.redirecturl;
-					
 						}
 					}
 		});
@@ -312,8 +302,6 @@
 	function publishPost() {
 		var mensaje = document.getElementById("postbox").value;
 		var url = document.getElementById("url").value;
-		alert(mensaje);
-		alert(url);
 		$.ajax({
 			async: true,
 			type: "POST",
@@ -345,14 +333,11 @@
 			type: "POST",
 			url: '@Url.Action("CommentPost", "Home")',
 			data: { "id": id, "comentario": c.value },
-			//data: x.value,
 			dataType:"JSON",
 			success: function (response) {
 				if (response.success) {
 
 					console.log('success');
-					//alert('nombre:',sessionStorage.getItem('nombre'));
-					//window.location = response.redirecturl;
 					alert("Tu comentario se ha publicado exitosamente");
 				}
 			}
@@ -361,7 +346,6 @@
 		console.log('termine');
 	}
 	function buscarHashtags(hashtag) {
-		alert(hashtag);
 		$.ajax({
 			async: true,
 			type: "POST",
@@ -372,7 +356,7 @@
 				if (response.success) {
 
 					console.log('success');
-					alert("Buscando hashtag");
+					//alert("Buscando hashtag");
 					window.location = response.redirecturl;
 				}
 			}

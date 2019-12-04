@@ -11,6 +11,7 @@
 					<li>Email<br><input type="text" name="email" id="loginEmail" style="color:black"></li>
 					<li>Password<br><input type="password" name="password" id="loginPassword" style="color:black"><br><a href="">Forgotten account?</a></li>
 					<li><input name="login" onclick="loginWithEmail()" href="Contact.cshtml"></li>
+					<!--<li><button onclick="loginWithEmail()">Log in</button></li>-->
 					<!--value="Log In"-->
 				</form>
 			</div>
@@ -27,19 +28,20 @@
 				<h1>Create an account</h1>
 				<p>It's free and always will be.</p>
 				<li><input type="text" placeholder="First Name" id="firstname"><input type="text" placeholder="Surname" id="surname"></li>
-				<li><input type="text" placeholder="Email address" id="email"></li>
-				<li><input type="text" placeholder="Re-enter email address" id="re-email"></li>
+				<li><input type="email" placeholder="Email address" id="email"></li>
+				<li><input type="email" placeholder="Re-enter email address" id="re-email"></li>
 				<li><input type="password" placeholder="New password" id="password"></li>
 				<p>Birthday</p>
 				<!--<li>
-					<select><option>Day</option></select>
-					<select><option>Month</option></select>
-					<select><option>Year</option></select>
-				</li>-->
-				<li><input type="date" id="date"/></li>
+		<select><option>Day</option></select>
+		<select><option>Month</option></select>
+		<select><option>Year</option></select>
+	</li>-->
+				<li><input type="date" id="date" /></li>
 				<li id="terms">By clicking Create an account, you agree to our <a href="">Terms</a> and that <br>you have read our <a href="">Data Policy</a>, including our <a href="">Cookie Use</a>.</li>
 				<li><p id="errors"></p></li>
-				<li><input value="Create an account" onclick="registrarse()"/></li>
+				<!--<li><input value="Create an account" onclick="registrarse()" /></li>-->	
+				<li><button onclick="registrarse()" />Create an account</li>
 			</div>
 
 		</div>
@@ -93,6 +95,7 @@
 		if (email != remail) {
 			errors += "The email is incorrect";
 		}
+
 		document.getElementById("errors").innerHTML = errors;
 		document.getElementById("errors").style.color = "red";
 	}
